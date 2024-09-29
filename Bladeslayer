@@ -95,6 +95,12 @@ local FuseGem110Tab = Window:MakeTab({
     PremiumOnly = false
 })
 
+-- Biến để kiểm soát trạng thái toggle
+local isFusing13 = false
+local isFusing10 = false
+local isFusing113 = false
+local isFusing110 = false
+
 -- Function to get next gem ID by current level
 local function GetNextGemID(currentLevel)
     local player = game.Players.LocalPlayer
@@ -157,13 +163,13 @@ FuseGem13Tab:AddToggle({
     Name = "Auto Fuse all gems to level 13",
     Default = false,
     Callback = function(value)
+        isFusing13 = value
         if value then
             print("Auto Fuse to Level 13 is ON")
-            while true do
+            while isFusing13 do
                 FuseGems(1, 12) -- Fuse from level 1 to 12
                 print("Reloading...")
                 task.wait(0.1) -- Small delay between reloads
-                if not value then break end -- Dừng vòng lặp nếu toggle bị tắt
             end
             print("Auto Fuse to Level 13 is OFF")
         end
@@ -175,13 +181,13 @@ FuseGem10Tab:AddToggle({
     Name = "Auto Fuse all gems to level 10",
     Default = false,
     Callback = function(value)
+        isFusing10 = value
         if value then
             print("Auto Fuse to Level 10 is ON")
-            while true do
+            while isFusing10 do
                 FuseGems(1, 9) -- Fuse from level 1 to 9
                 print("Reloading...")
                 task.wait(0.2) -- Small delay between reloads
-                if not value then break end -- Dừng vòng lặp nếu toggle bị tắt
             end
             print("Auto Fuse to Level 10 is OFF")
         end
@@ -193,13 +199,13 @@ FuseGem113Tab:AddToggle({
     Name = "Auto Fuse all gems to level 113",
     Default = false,
     Callback = function(value)
+        isFusing113 = value
         if value then
             print("Auto Fuse to Level 113 is ON")
-            while true do
+            while isFusing113 do
                 FuseGems(100, 112) -- Fuse from level 100 to 112
                 print("Reloading...")
                 task.wait(0.2) -- Small delay between reloads
-                if not value then break end -- Dừng vòng lặp nếu toggle bị tắt
             end
             print("Auto Fuse to Level 113 is OFF")
         end
@@ -211,18 +217,19 @@ FuseGem110Tab:AddToggle({
     Name = "Auto Fuse all gems to level 110",
     Default = false,
     Callback = function(value)
+        isFusing110 = value
         if value then
             print("Auto Fuse to Level 110 is ON")
-            while true do
+            while isFusing110 do
                 FuseGems(100, 109) -- Fuse from level 10 to 110
                 print("Reloading...")
                 task.wait(0.2) -- Small delay between reloads
-                if not value then break end -- Dừng vòng lặp nếu toggle bị tắt
             end
             print("Auto Fuse to Level 110 is OFF")
         end
     end
 })
+
 
 
 
