@@ -76,7 +76,7 @@ local FuseGem1Tab = Window:MakeTab({
         Icon = "rbxassetid://4483345998", PremiumOnly = false
     })
 
-    for level = 1, 9 do
+    for level = 1, 14 do
         FuseGem1Tab:AddButton({
             Name = "Fuse Gem to level 10 w/ Lv." .. level,
             Callback = function()
@@ -111,7 +111,7 @@ local FuseGem1Tab = Window:MakeTab({
                 local function FuseGems()
                     local currentLevel = level
 
-                    while currentLevel <= 10 do
+                    while currentLevel <= 14 do
                         local gemID = GetNextGemID(currentLevel)
 
                         if gemID then
