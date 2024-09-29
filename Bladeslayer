@@ -79,8 +79,8 @@ local FuseGem2Tab = Window:MakeTab({
     Icon = "rbxassetid://4483345998", PremiumOnly = false
 })
 
--- Hàm lấy ID của gem tiếp theo
-local function GetNextGemID(currentLevel)
+-- Hàm lấy ID của gem tiếp theo dưới một cấp độ nhất định
+local function GetGemIDsUnderLevel(maxLevel)
     local player = game.Players.LocalPlayer
     local gui = player:WaitForChild("PlayerGui")
     local gemsPanel = gui:WaitForChild("GemsPanel")
@@ -88,14 +88,16 @@ local function GetNextGemID(currentLevel)
     local bgImage = frame:WaitForChild("BgImage")
     local list = bgImage:WaitForChild("List")
     local scrollingFrame = list:WaitForChild("ScrollingFrame")
+    
+    local gemIDs = {}
 
     if scrollingFrame then
         for _, child in ipairs(scrollingFrame:GetChildren()) do
             local numtext = child:FindFirstChild("NumText")
             if numtext then
                 local level = tonumber(numtext.Text:match("%d+"))
-                if level == currentLevel then
-                    return child.Name -- Trả về ID của gem
+                if level < maxLevel then
+                    table.insert(gemIDs, child.Name) -- Thêm ID của gem vào danh sách
                 end
             end
         end
@@ -103,82 +105,59 @@ local function GetNextGemID(currentLevel)
         error("Error: ScrollingFrame not found.")
     end
 
-    return nil
+    return gemIDs
 end
 
 -- Mã cho Tab Lvl 13
 FuseGem1Tab:AddButton({
-    Name = "Auto Fuse to level 13",
+    Name = "Auto Fuse all to level 13",
     Callback = function()
-        local currentLevel = 1 -- Bắt đầu từ cấp độ 1
-        local continueFusing = true -- Biến để kiểm soát việc tiếp tục fuse
-
-        while continueFusing do
-            local gemID = GetNextGemID(currentLevel)
-
-            if gemID then
-                print("Fusing Level", currentLevel, "gem ID found:", gemID)
-
-                -- Tạo tham số cho hàm fuse
-                local args = {
-                    [1] = {
-                        [1] = gemID,
-                        [2] = gemID,
-                        [3] = gemID,
-                        [4] = gemID,
-                        [5] = gemID
-                    }
+        local gemIDs = GetGemIDsUnderLevel(13) -- Lấy tất cả gem dưới cấp độ 13
+        
+        for _, gemID in ipairs(gemIDs) do
+            -- Tạo tham số cho hàm fuse
+            local args = {
+                [1] = {
+                    [1] = gemID,
+                    [2] = gemID,
+                    [3] = gemID,
+                    [4] = gemID,
+                    [5] = gemID
                 }
+            }
 
-                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("FuseGem"):InvokeServer(unpack(args))
-                print("Invoked FuseGem for Level", currentLevel)
-
-                currentLevel = currentLevel + 1 -- Tăng cấp độ
-                wait(0.5) -- Chờ một chút giữa các lần fuse
-            else
-                print("Error: Could not find gem ID for level", currentLevel)
-                continueFusing = false -- Dừng nếu không tìm thấy gem
-            end
+            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("FuseGem"):InvokeServer(unpack(args))
+            print("Fused gem ID:", gemID, "to level 13")
+            wait(0.5) -- Chờ một chút giữa các lần fuse để tránh quá tải
         end
     end
 })
 
 -- Mã cho Tab Lvl 10
 FuseGem2Tab:AddButton({
-    Name = "Auto Fuse to level 10",
+    Name = "Auto Fuse all to level 10",
     Callback = function()
-        local currentLevel = 1 -- Bắt đầu từ cấp độ 1
-        local continueFusing = true -- Biến để kiểm soát việc tiếp tục fuse
-
-        while continueFusing do
-            local gemID = GetNextGemID(currentLevel)
-
-            if gemID then
-                print("Fusing Level", currentLevel, "gem ID found:", gemID)
-
-                -- Tạo tham số cho hàm fuse
-                local args = {
-                    [1] = {
-                        [1] = gemID,
-                        [2] = gemID,
-                        [3] = gemID,
-                        [4] = gemID,
-                        [5] = gemID
-                    }
+        local gemIDs = GetGemIDsUnderLevel(10) -- Lấy tất cả gem dưới cấp độ 10
+        
+        for _, gemID in ipairs(gemIDs) do
+            -- Tạo tham số cho hàm fuse
+            local args = {
+                [1] = {
+                    [1] = gemID,
+                    [2] = gemID,
+                    [3] = gemID,
+                    [4] = gemID,
+                    [5] = gemID
                 }
+            }
 
-                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("FuseGem"):InvokeServer(unpack(args))
-                print("Invoked FuseGem for Level", currentLevel)
-
-                currentLevel = currentLevel + 1 -- Tăng cấp độ
-                wait(0.5) -- Chờ một chút giữa các lần fuse
-            else
-                print("Error: Could not find gem ID for level", currentLevel)
-                continueFusing = false -- Dừng nếu không tìm thấy gem
-            end
+            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("FuseGem"):InvokeServer(unpack(args))
+            print("Fused gem ID:", gemID, "to level 10")
+            wait(0.5) -- Chờ một chút giữa các lần fuse để tránh quá tải
         end
     end
 })
+
 
 
 
