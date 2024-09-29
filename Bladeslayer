@@ -69,17 +69,28 @@ end});
 
 
 
-local FuseGem1Tab = Window:MakeTab({
-    Name = "Lvl 13 Dupe",
+local Window = {} -- Thay thế bằng đối tượng Window của bạn
+
+-- Tạo các tab cho fuse gems
+local Lvl10 = Window:MakeTab({
+    Name = "Lvl 10",
     Icon = "rbxassetid://4483345998", PremiumOnly = false
 })
 
-local FuseGem2Tab = Window:MakeTab({
-    Name = "Lvl 10 Dupe",
+local Lvl13 = Window:MakeTab({
+    Name = "Lvl 13",
     Icon = "rbxassetid://4483345998", PremiumOnly = false
 })
 
--- Hàm lấy ID của tất cả gem dưới một cấp độ nhất định
+-- Cấu hình mặc định
+getgenv().Settings = {
+    AutoFuseAllGems = false,
+    fuseLevel10Gems = false,
+    fuseLevel13Gems = false,
+    deleteGems = false,
+}
+
+-- Hàm lấy tất cả gem dưới một cấp độ nhất định
 local function GetGemIDsUnderLevel(targetLevel)
     local player = game.Players.LocalPlayer
     local gui = player:WaitForChild("PlayerGui")
@@ -131,19 +142,92 @@ local function AutoFuseAllToLevel(targetLevel)
     end
 end
 
--- Mã cho Tab Lvl 13
-FuseGem1Tab:AddButton({
-    Name = "Auto Fuse all to level 13",
-    Callback = function()
-        AutoFuseAllToLevel(13) -- Nâng cấp tất cả gem đến cấp độ 13
+-- Hàm xóa gem không được trang bị
+local function DeleteUnequippedGems()
+    local player = game.Players.LocalPlayer
+    local WeaponsInventory = require(game:GetService("ReplicatedStorage").Scripts.Client.Manager.PlayerManager)
+
+    for _, gem in pairs(WeaponsInventory.localPlayerData.gems) do
+        pcall(function()
+            if (gem.equipPosition == nil or gem.equipPosition == "") then
+                local args = {[1] = {gem.guid}} -- Xóa gem
+                game:GetService("ReplicatedStorage").Remotes.FuseGem:InvokeServer(unpack(args))
+                print("Deleted gem ID:", gem.guid)
+                wait(0.1) -- Chờ một chút giữa các lần xóa
+            end
+        end)
+    end
+end
+
+-- Toggle cho tab Lvl 10
+Lvl10:AddToggle({
+    Name = "Auto Fuse All Level 10 Gems",
+    Callback = function(fuseLevel10Gems)
+        if fuseLevel10Gems then
+            getgenv().Settings.fuseLevel10Gems = true
+            spawn(function()
+                while getgenv().Settings.fuseLevel10Gems do
+                    AutoFuseAllToLevel(10) -- Nâng cấp tất cả gem lên cấp độ 10
+                    wait(0.1)
+                end
+            end)
+        else
+            getgenv().Settings.fuseLevel10Gems = false
+        end
     end
 })
 
--- Mã cho Tab Lvl 10
-FuseGem2Tab:AddButton({
-    Name = "Auto Fuse all to level 10",
-    Callback = function()
-        AutoFuseAllToLevel(10) -- Nâng cấp tất cả gem đến cấp độ 10
+-- Toggle xóa gem cho tab Lvl 10
+Lvl10:AddToggle({
+    Name = "Delete Unequipped Gems",
+    Callback = function(deleteGems)
+        if deleteGems then
+            getgenv().Settings.deleteGems = true
+            spawn(function()
+                while getgenv().Settings.deleteGems do
+                    DeleteUnequippedGems() -- Xóa các gem không được trang bị
+                    wait(0.1)
+                end
+            end)
+        else
+            getgenv().Settings.deleteGems = false
+        end
+    end
+})
+
+-- Toggle cho tab Lvl 13
+Lvl13:AddToggle({
+    Name = "Auto Fuse All Level 13 Gems",
+    Callback = function(fuseLevel13Gems)
+        if fuseLevel13Gems then
+            getgenv().Settings.fuseLevel13Gems = true
+            spawn(function()
+                while getgenv().Settings.fuseLevel13Gems do
+                    AutoFuseAllToLevel(13) -- Nâng cấp tất cả gem lên cấp độ 13
+                    wait(0.1)
+                end
+            end)
+        else
+            getgenv().Settings.fuseLevel13Gems = false
+        end
+    end
+})
+
+-- Toggle xóa gem cho tab Lvl 13
+Lvl13:AddToggle({
+    Name = "Delete Unequipped Gems",
+    Callback = function(deleteGems)
+        if deleteGems then
+            getgenv().Settings.deleteGems = true
+            spawn(function()
+                while getgenv().Settings.deleteGems do
+                    DeleteUnequippedGems() -- Xóa các gem không được trang bị
+                    wait(0.1)
+                end
+            end)
+        else
+            getgenv().Settings.deleteGems = false
+        end
     end
 })
 
