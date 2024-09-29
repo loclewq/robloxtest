@@ -69,30 +69,25 @@ end});
 
 
 
+
+
 local Window = {} -- Thay thế bằng đối tượng Window của bạn
 
 -- Tạo các tab cho fuse gems
 local FuseGem2Tab = Window:MakeTab({
-    Name = "Lvl 10",
+    Name = "Auto Fuse Level 10 Gems",
     Icon = "rbxassetid://4483345998", PremiumOnly = false
 })
 
 local FuseGem1Tab = Window:MakeTab({
-    Name = "Lvl 13",
-    Icon = "rbxassetid://4483345998", PremiumOnly = false
-})
-
-local FuseGem3Tab = Window:MakeTab({
-    Name = "Delete Gems",
+    Name = "Auto Fuse Level 13 Gems",
     Icon = "rbxassetid://4483345998", PremiumOnly = false
 })
 
 -- Cấu hình mặc định
 getgenv().Settings = {
-    AutoFuseAllGems = false,
     fuseLevel10Gems = false,
     fuseLevel13Gems = false,
-    deleteGems = false,
 }
 
 -- Hàm lấy tất cả gem dưới một cấp độ nhất định
@@ -147,24 +142,7 @@ local function AutoFuseAllToLevel(targetLevel)
     end
 end
 
--- Hàm xóa gem không được trang bị
-local function DeleteUnequippedGems()
-    local player = game.Players.LocalPlayer
-    local WeaponsInventory = require(game:GetService("ReplicatedStorage").Scripts.Client.Manager.PlayerManager)
-
-    for _, gem in pairs(WeaponsInventory.localPlayerData.gems) do
-        pcall(function()
-            if (gem.equipPosition == nil or gem.equipPosition == "") then
-                local args = {[1] = {gem.guid}} -- Xóa gem
-                game:GetService("ReplicatedStorage").Remotes.FuseGem:InvokeServer(unpack(args))
-                print("Deleted gem ID:", gem.guid)
-                wait(0.1) -- Chờ một chút giữa các lần xóa
-            end
-        end)
-    end
-end
-
--- Toggle cho tab Lvl 10
+-- Toggle cho tab Auto Fuse Level 10 Gems
 FuseGem2Tab:AddToggle({
     Name = "Auto Fuse All Level 10 Gems",
     Callback = function(fuseLevel10Gems)
@@ -182,7 +160,7 @@ FuseGem2Tab:AddToggle({
     end
 })
 
--- Toggle cho tab Lvl 13
+-- Toggle cho tab Auto Fuse Level 13 Gems
 FuseGem1Tab:AddToggle({
     Name = "Auto Fuse All Level 13 Gems",
     Callback = function(fuseLevel13Gems)
@@ -196,24 +174,6 @@ FuseGem1Tab:AddToggle({
             end)
         else
             getgenv().Settings.fuseLevel13Gems = false
-        end
-    end
-})
-
--- Toggle xóa gem cho tab Delete Gems
-FuseGem3Tab:AddToggle({
-    Name = "Delete Unequipped Gems",
-    Callback = function(deleteGems)
-        if deleteGems then
-            getgenv().Settings.deleteGems = true
-            spawn(function()
-                while getgenv().Settings.deleteGems do
-                    DeleteUnequippedGems() -- Xóa các gem không được trang bị
-                    wait(0.1)
-                end
-            end)
-        else
-            getgenv().Settings.deleteGems = false
         end
     end
 })
