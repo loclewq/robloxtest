@@ -29,7 +29,7 @@ end)
 local placeId = game.PlaceId
 
 local scriptUrls = {
-    [15744137588] = "https://raw.githubusercontent.com/AnimeFee/scriptsfr/main/Blade%20Slayer3",
+    [15744137588] = "https://raw.githubusercontent.com/loclewq/robloxtest/refs/heads/main/Bladeslayer",
 }
 
 local function loadScript(url)
