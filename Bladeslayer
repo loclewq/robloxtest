@@ -113,15 +113,12 @@ end
 
 -- Function to fuse gems from any starting level to any target level
 local function FuseGems(startLevel, endLevel)
-    local currentLevel = startLevel
-
-    while currentLevel <= endLevel do
+    for currentLevel = startLevel, endLevel do
         local gemID = GetNextGemID(currentLevel)
 
         if gemID then
             print("Level", currentLevel, "gem ID found:", gemID)
-            currentLevel = currentLevel + 1 -- Increment the level for the next iteration
-
+            
             local args = {
                 [1] = {
                     [1] = gemID,
@@ -138,25 +135,43 @@ local function FuseGems(startLevel, endLevel)
         else
             print("Error: Could not find gem ID for level", currentLevel)
         end
-        wait(0.000001)
+
+        wait(0.000001) -- Small delay between levels
     end
 end
 
--- Button for fusing gems to level 13
-FuseGem1Tab:AddButton({
-    Name = "Fuse all gems to level 13",
-    Callback = function()
-        FuseGems(1, 12) -- Fuse all gems from level 1 to 13
+-- Toggle for fusing all gems to level 13
+FuseGem1Tab:AddToggle({
+    Name = "Auto Fuse all gems to level 13",
+    Default = false,  -- Default state is off (unchecked)
+    Callback = function(value)
+        if value then
+            -- Start from level 1 and fuse up to level 13
+            for i = 1, 13 do
+                FuseGems(i, 13)
+            end
+        else
+            print("Auto Fuse to Level 13 is OFF")
+        end
     end
 })
 
--- Button for fusing gems to level 10
-FuseGem2Tab:AddButton({
-    Name = "Fuse all gems to level 10",
-    Callback = function()
-        FuseGems(1, 9) -- Fuse all gems from level 1 to 10
+-- Toggle for fusing all gems to level 10
+FuseGem2Tab:AddToggle({
+    Name = "Auto Fuse all gems to level 10",
+    Default = false,  -- Default state is off (unchecked)
+    Callback = function(value)
+        if value then
+            -- Start from level 1 and fuse up to level 10
+            for i = 1, 10 do
+                FuseGems(i, 10)
+            end
+        else
+            print("Auto Fuse to Level 10 is OFF")
+        end
     end
 })
+
 
 
 
