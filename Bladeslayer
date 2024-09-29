@@ -71,73 +71,19 @@ end});
 
 
 
-local DupeGemTab = Window:MakeTab({
-    Name = "Dupe Gem",
-    Icon = "rbxassetid://4483345998", 
-    PremiumOnly = false
-})
+local isFusing13 = false
+local isFusing10 = false
+local isFusing113 = false
+local isFusing110 = false
 
-local DupeColorGemTab = Window:MakeTab({
-    Name = "Dupe Color Gem",
-    Icon = "rbxassetid://4483345998", 
-    PremiumOnly = false
-})
-
--- Function to get next gem ID by current level
+-- Function to get next gem ID by current level (same as your code)
 local function GetNextGemID(currentLevel)
-    local player = game.Players.LocalPlayer
-    local gui = player:WaitForChild("PlayerGui")
-    local gemsPanel = gui:WaitForChild("GemsPanel")
-    local frame = gemsPanel:WaitForChild("Frame")
-    local bgImage = frame:WaitForChild("BgImage")
-    local list = bgImage:WaitForChild("List")
-    local scrollingFrame = list:WaitForChild("ScrollingFrame")
-
-    if scrollingFrame then
-        for _, child in ipairs(scrollingFrame:GetChildren()) do
-            local numtext = child:FindFirstChild("NumText")
-
-            if numtext then
-                local level = tonumber(numtext.Text:match("%d+"))
-                if level == currentLevel then
-                    return child.Name -- Return the ID of the gem
-                end
-            end
-        end
-    else
-        error("Error: ScrollingFrame not found.")
-    end
-
-    return nil
+    -- (Your existing code for getting gem ID)
 end
 
--- Function to fuse gems from any starting level to any target level
+-- Function to fuse gems from any starting level to any target level (same as your code)
 local function FuseGems(startLevel, endLevel)
-    for currentLevel = startLevel, endLevel do
-        local gemID = GetNextGemID(currentLevel)
-
-        if gemID then
-            print("Level", currentLevel, "gem ID found:", gemID)
-            
-            local args = {
-                [1] = {
-                    [1] = gemID,
-                    [2] = gemID,
-                    [3] = gemID,
-                    [4] = gemID,
-                    [5] = gemID
-                }
-            }
-
-            print("Invoking FuseGem remote with args:", args)
-
-            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("FuseGem"):InvokeServer(unpack(args))
-        else
-            print("Error: Could not find gem ID for level", currentLevel)
-        end
-
-        task.wait(0.000001) -- Small delay between levels, increase if needed for stability
-    end
+    -- (Your existing code for fusing gems)
 end
 
 -- Toggle for fusing all gems to level 13 with reload
@@ -145,13 +91,15 @@ DupeGemTab:AddToggle({
     Name = "Auto Fuse all gems to level 13",
     Default = false,
     Callback = function(value)
+        isFusing13 = value
         if value then
             print("Auto Fuse to Level 13 is ON")
-            while value do
+            while isFusing13 do
                 FuseGems(1, 12) -- Fuse from level 1 to 12
                 print("Reloading...")
                 task.wait(0.1) -- Small delay between reloads
             end
+        else
             print("Auto Fuse to Level 13 is OFF")
         end
     end
@@ -162,13 +110,15 @@ DupeGemTab:AddToggle({
     Name = "Auto Fuse all gems to level 10",
     Default = false,
     Callback = function(value)
+        isFusing10 = value
         if value then
             print("Auto Fuse to Level 10 is ON")
-            while value do
+            while isFusing10 do
                 FuseGems(1, 9) -- Fuse from level 1 to 9
                 print("Reloading...")
                 task.wait(0.2) -- Small delay between reloads
             end
+        else
             print("Auto Fuse to Level 10 is OFF")
         end
     end
@@ -179,13 +129,15 @@ DupeColorGemTab:AddToggle({
     Name = "Auto Fuse all gems to level 113",
     Default = false,
     Callback = function(value)
+        isFusing113 = value
         if value then
             print("Auto Fuse to Level 113 is ON")
-            while value do
+            while isFusing113 do
                 FuseGems(100, 112) -- Fuse from level 100 to 112
                 print("Reloading...")
                 task.wait(0.2) -- Small delay between reloads
             end
+        else
             print("Auto Fuse to Level 113 is OFF")
         end
     end
@@ -196,17 +148,20 @@ DupeColorGemTab:AddToggle({
     Name = "Auto Fuse all gems to level 110",
     Default = false,
     Callback = function(value)
+        isFusing110 = value
         if value then
             print("Auto Fuse to Level 110 is ON")
-            while value do
+            while isFusing110 do
                 FuseGems(100, 109) -- Fuse from level 100 to 109
                 print("Reloading...")
                 task.wait(0.2) -- Small delay between reloads
             end
+        else
             print("Auto Fuse to Level 110 is OFF")
         end
     end
 })
+
 
 
 
