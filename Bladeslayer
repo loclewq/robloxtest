@@ -302,7 +302,7 @@ EGG1:AddToggle({
     end
 });
 
-Lvl10:AddToggle({Name="Gemdupe?,Callback=function(fuseLevel10Gems)
+Lvl10:AddToggle({Name="Gemdupe",Callback=function(fuseLevel10Gems)
 	if fuseLevel10Gems then
 		getgenv().Settings.fuseLevel10Gems = true;
 		pcall(function()
