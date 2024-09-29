@@ -66,6 +66,9 @@ EMount:AddButton({Name="Use Selected Mount",Callback=function()
 		warn("No mount selected.");
 	end
 end});
+
+
+
 local FuseGem1Tab = Window:MakeTab({
     Name = "Lvl 13 Dupe",
     Icon = "rbxassetid://4483345998", PremiumOnly = false
@@ -76,75 +79,8 @@ local FuseGem2Tab = Window:MakeTab({
     Icon = "rbxassetid://4483345998", PremiumOnly = false
 })
 
-local isAutoFusing1 = false -- Biến trạng thái cho auto fuse cấp 13
-local isAutoFusing2 = false -- Biến trạng thái cho auto fuse cấp 10
-
--- Mã cho Tab Lvl 13
-for level = 1, 12 do
-    FuseGem1Tab:AddButton({
-        Name = "Fuse Gem to level 13 w/ Lv." .. level,
-        Callback = function()
-            isAutoFusing1 = not isAutoFusing1 -- Chuyển đổi trạng thái
-            if isAutoFusing1 then
-                while isAutoFusing1 do
-                    local gemID = GetNextGemID(level)
-                    if gemID then
-                        local args = {
-                            [1] = {
-                                [1] = gemID,
-                                [2] = gemID,
-                                [3] = gemID,
-                                [4] = gemID,
-                                [5] = gemID
-                            }
-                        }
-                        game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("FuseGem"):InvokeServer(unpack(args))
-                        level = level + 1 -- Tăng cấp độ
-                    else
-                        print("Error: Could not find gem ID for level", level)
-                        break -- Dừng nếu không tìm thấy gem
-                    end
-                    wait(0.000001) -- Chờ một chút giữa các lần fuse
-                end
-            end
-        end
-    })
-end
-
--- Mã cho Tab Lvl 10
-for level = 1, 10 do
-    FuseGem2Tab:AddButton({
-        Name = "Fuse Gem to level 10 w/ Lv." .. level,
-        Callback = function()
-            isAutoFusing2 = not isAutoFusing2 -- Chuyển đổi trạng thái
-            if isAutoFusing2 then
-                while isAutoFusing2 do
-                    local gemID = GetNextGemID(level)
-                    if gemID then
-                        local args = {
-                            [1] = {
-                                [1] = gemID,
-                                [2] = gemID,
-                                [3] = gemID,
-                                [4] = gemID,
-                                [5] = gemID
-                            }
-                        }
-                        game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("FuseGem"):InvokeServer(unpack(args))
-                        level = level + 1 -- Tăng cấp độ
-                    else
-                        print("Error: Could not find gem ID for level", level)
-                        break -- Dừng nếu không tìm thấy gem
-                    end
-                    wait(0.000001) -- Chờ một chút giữa các lần fuse
-                end
-            end
-        end
-    })
-end
-
 -- Hàm lấy ID của gem tiếp theo
-function GetNextGemID(currentLevel)
+local function GetNextGemID(currentLevel)
     local player = game.Players.LocalPlayer
     local gui = player:WaitForChild("PlayerGui")
     local gemsPanel = gui:WaitForChild("GemsPanel")
@@ -169,6 +105,81 @@ function GetNextGemID(currentLevel)
 
     return nil
 end
+
+-- Mã cho Tab Lvl 13
+FuseGem1Tab:AddButton({
+    Name = "Auto Fuse to level 13",
+    Callback = function()
+        local currentLevel = 1 -- Bắt đầu từ cấp độ 1
+
+        while currentLevel <= 12 do
+            local gemID = GetNextGemID(currentLevel)
+
+            if gemID then
+                print("Fusing Level", currentLevel, "gem ID found:", gemID)
+
+                -- Construct the args table with gemID repeated five times
+                local args = {
+                    [1] = {
+                        [1] = gemID,
+                        [2] = gemID,
+                        [3] = gemID,
+                        [4] = gemID,
+                        [5] = gemID
+                    }
+                }
+
+                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("FuseGem"):InvokeServer(unpack(args))
+                print("Invoked FuseGem for Level", currentLevel)
+
+                currentLevel = currentLevel + 1 -- Tăng cấp độ
+            else
+                print("Error: Could not find gem ID for level", currentLevel)
+                break -- Dừng nếu không tìm thấy gem
+            end
+
+            wait(0.0001) -- Chờ một chút giữa các lần fuse để tránh quá tải
+        end
+    end
+})
+
+-- Mã cho Tab Lvl 10
+FuseGem2Tab:AddButton({
+    Name = "Auto Fuse to level 10",
+    Callback = function()
+        local currentLevel = 1 -- Bắt đầu từ cấp độ 1
+
+        while currentLevel <= 9 do
+            local gemID = GetNextGemID(currentLevel)
+
+            if gemID then
+                print("Fusing Level", currentLevel, "gem ID found:", gemID)
+
+                -- Construct the args table with gemID repeated five times
+                local args = {
+                    [1] = {
+                        [1] = gemID,
+                        [2] = gemID,
+                        [3] = gemID,
+                        [4] = gemID,
+                        [5] = gemID
+                    }
+                }
+
+                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("FuseGem"):InvokeServer(unpack(args))
+                print("Invoked FuseGem for Level", currentLevel)
+
+                currentLevel = currentLevel + 1 -- Tăng cấp độ
+            else
+                print("Error: Could not find gem ID for level", currentLevel)
+                break -- Dừng nếu không tìm thấy gem
+            end
+
+            wait(0.0001) -- Chờ một chút giữa các lần fuse để tránh quá tải
+        end
+    end
+})
+
 
 
 FarmSec:AddToggle({Name="Auto Collect Drops",Callback=function(v1)
