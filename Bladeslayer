@@ -126,7 +126,7 @@ local function AutoBuyGems()
 
         -- Gửi lệnh mua gem
         game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("TowerExchange"):FireServer(unpack(args))
-        task.wait(0.1) -- Delay giữa các lệnh mua
+        task.wait(0.01) -- Delay giữa các lệnh mua
     end
 end
 
@@ -165,7 +165,7 @@ local function AutoBuyColorGems()
 
         -- Gửi lệnh mua ColorGem
         game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("MapShopExchange"):FireServer(unpack(args))
-        task.wait(0.1) -- Delay giữa các lệnh mua
+        task.wait(0.01) -- Delay giữa các lệnh mua
     end
 end
 
@@ -202,7 +202,7 @@ GemActionsTab:AddToggle({
             print("Auto Buy Gems is ON")
             while isAutoBuyingGem do
                 AutoBuyGems()
-                task.wait(0.2) -- Delay giữa các vòng lặp
+                task.wait(0.01) -- Delay giữa các vòng lặp
             end
         else
             print("Auto Buy Gems is OFF")
@@ -220,7 +220,7 @@ GemActionsTab:AddToggle({
             print("Auto Sell Gems is ON")
             while isAutoSellingGem do
                 AutoSellGems()
-                task.wait(0.5) -- Delay giữa các vòng lặp
+                task.wait(0.01) -- Delay giữa các vòng lặp
             end
         else
             print("Auto Sell Gems is OFF")
@@ -238,7 +238,7 @@ ColorGemActionsTab:AddToggle({
             print("Auto Buy ColorGems is ON")
             while isAutoBuyingColorGem do
                 AutoBuyColorGems()
-                task.wait(0.2) -- Delay giữa các vòng lặp
+                task.wait(0.01) -- Delay giữa các vòng lặp
             end
         else
             print("Auto Buy ColorGems is OFF")
@@ -256,7 +256,7 @@ ColorGemActionsTab:AddToggle({
             print("Auto Sell ColorGems is ON")
             while isAutoSellingColorGem do
                 AutoSellColorGems()
-                task.wait(0.5) -- Delay giữa các vòng lặp
+                task.wait(0.01) -- Delay giữa các vòng lặp
             end
         else
             print("Auto Sell ColorGems is OFF")
