@@ -136,37 +136,48 @@ local function FuseGems(startLevel, endLevel)
             print("Error: Could not find gem ID for level", currentLevel)
         end
 
-        wait(0.1) -- Small delay between levels, increase if needed for stability
+        wait(0.000001) -- Small delay between levels, increase if needed for stability
     end
 end
 
--- Toggle for fusing all gems to level 13
+-- Toggle for fusing all gems to level 13 with reload
 FuseGem1Tab:AddToggle({
     Name = "Auto Fuse all gems to level 13",
     Default = false,  -- Default state is off (unchecked)
     Callback = function(value)
         if value then
-            -- Start from level 1 and fuse up to level 12
-            FuseGems(1, 12) -- Corrected to stop at level 12
+            print("Auto Fuse to Level 13 is ON")
+            -- Start an infinite loop for auto-fuse with reload
+            while value do
+                FuseGems(1, 12) -- Fuse from level 1 to 12
+                print("Reloading...")
+                wait(0.1) -- Small delay between reloads, adjust as needed
+            end
         else
             print("Auto Fuse to Level 13 is OFF")
         end
     end
 })
 
--- Toggle for fusing all gems to level 10
+-- Toggle for fusing all gems to level 10 with reload
 FuseGem2Tab:AddToggle({
     Name = "Auto Fuse all gems to level 10",
     Default = false,  -- Default state is off (unchecked)
     Callback = function(value)
         if value then
-            -- Start from level 1 and fuse up to level 9
-            FuseGems(1, 9) -- Corrected to stop at level 9
+            print("Auto Fuse to Level 10 is ON")
+            -- Start an infinite loop for auto-fuse with reload
+            while value do
+                FuseGems(1, 9) -- Fuse from level 1 to 9
+                print("Reloading...")
+                wait(0.1) -- Small delay between reloads, adjust as needed
+            end
         else
             print("Auto Fuse to Level 10 is OFF")
         end
     end
 })
+
 
 
 
