@@ -79,7 +79,7 @@ local FuseGem2Tab = Window:MakeTab({
     Icon = "rbxassetid://4483345998", PremiumOnly = false
 })
 
--- Hàm lấy ID của tất cả gem dưới một cấp độ nhất định
+-- Hàm lấy tất cả gem dưới một cấp độ nhất định
 local function GetGemIDsUnderLevel(maxLevel)
     local player = game.Players.LocalPlayer
     local gui = player:WaitForChild("PlayerGui")
@@ -108,29 +108,37 @@ local function GetGemIDsUnderLevel(maxLevel)
     return gemIDs
 end
 
+-- Hàm để tự động nâng cấp tất cả gem lên cấp độ tối đa
+local function AutoFuseAllToLevel(targetLevel, maxLevel)
+    local gemIDs = GetGemIDsUnderLevel(maxLevel) -- Lấy tất cả gem dưới cấp độ maxLevel
+
+    for _, gemID in ipairs(gemIDs) do
+        -- Tạo tham số cho hàm fuse
+        local args = {
+            [1] = {
+                [1] = gemID,
+                [2] = gemID,
+                [3] = gemID,
+                [4] = gemID,
+                [5] = gemID
+            }
+        }
+
+        -- Nâng cấp gem lên cấp độ tối đa
+        while maxLevel > targetLevel do
+            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("FuseGem"):InvokeServer(unpack(args))
+            print("Fused gem ID:", gemID, "to level", maxLevel)
+            maxLevel = maxLevel - 1 -- Giảm cấp độ sau mỗi lần fuse
+            wait(0.5) -- Chờ một chút giữa các lần fuse để tránh quá tải
+        end
+    end
+end
+
 -- Mã cho Tab Lvl 13
 FuseGem1Tab:AddButton({
     Name = "Auto Fuse all to level 13",
     Callback = function()
-        local gemIDs = GetGemIDsUnderLevel(13) -- Lấy tất cả gem dưới cấp độ 13
-
-        for _, gemID in ipairs(gemIDs) do
-            -- Tạo tham số cho hàm fuse
-            local args = {
-                [1] = {
-                    [1] = gemID,
-                    [2] = gemID,
-                    [3] = gemID,
-                    [4] = gemID,
-                    [5] = gemID
-                }
-            }
-
-            -- Thực hiện fuse gem lên cấp độ 13
-            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("FuseGem"):InvokeServer(unpack(args))
-            print("Fused gem ID:", gemID, "to level 13")
-            wait(0.5) -- Chờ một chút giữa các lần fuse để tránh quá tải
-        end
+        AutoFuseAllToLevel(13, 13) -- Nâng cấp tất cả gem lên cấp độ 13
     end
 })
 
@@ -138,27 +146,10 @@ FuseGem1Tab:AddButton({
 FuseGem2Tab:AddButton({
     Name = "Auto Fuse all to level 10",
     Callback = function()
-        local gemIDs = GetGemIDsUnderLevel(10) -- Lấy tất cả gem dưới cấp độ 10
-
-        for _, gemID in ipairs(gemIDs) do
-            -- Tạo tham số cho hàm fuse
-            local args = {
-                [1] = {
-                    [1] = gemID,
-                    [2] = gemID,
-                    [3] = gemID,
-                    [4] = gemID,
-                    [5] = gemID
-                }
-            }
-
-            -- Thực hiện fuse gem lên cấp độ 10
-            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("FuseGem"):InvokeServer(unpack(args))
-            print("Fused gem ID:", gemID, "to level 10")
-            wait(0.5) -- Chờ một chút giữa các lần fuse để tránh quá tải
-        end
+        AutoFuseAllToLevel(10, 10) -- Nâng cấp tất cả gem lên cấp độ 10
     end
 })
+
 
 
 
