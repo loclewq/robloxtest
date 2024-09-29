@@ -1,0 +1,48 @@
+local blacklistedUsers = { 
+"IN_TP7"
+}
+
+local function isBlacklisted(username)
+    for _, blacklistedUsername in ipairs(blacklistedUsers) do
+        if username == blacklistedUsername then
+            return true
+        end
+    end
+    return false
+end
+
+local function kickIfBlacklisted(player)
+    if isBlacklisted(player.Name) then
+        print(player.Name .. " is blacklisted. Access denied.")
+        player:Kick("You are not authorized to use this script.")
+    end
+end
+
+for _, player in pairs(game.Players:GetPlayers()) do
+    kickIfBlacklisted(player)
+end
+
+game.Players.PlayerAdded:Connect(function(player)
+    kickIfBlacklisted(player)
+end)
+
+local placeId = game.PlaceId
+
+local scriptUrls = {
+    [15744137588] = "https://raw.githubusercontent.com/AnimeFee/scriptsfr/main/Blade%20Slayer3",
+}
+
+local function loadScript(url)
+    local success, result = pcall(function()
+        loadstring(game:HttpGet(url, true))()
+    end)
+    if not success then
+        print("Error loading script:", result)
+    end
+end
+
+if scriptUrls[placeId] then
+    loadScript(scriptUrls[placeId])
+else
+    print("Unknown place ID:", placeId)
+end
