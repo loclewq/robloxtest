@@ -72,13 +72,18 @@ end});
 local Window = {} -- Thay thế bằng đối tượng Window của bạn
 
 -- Tạo các tab cho fuse gems
-local Lvl10 = Window:MakeTab({
+local FuseGem2Tab = Window:MakeTab({
     Name = "Lvl 10",
     Icon = "rbxassetid://4483345998", PremiumOnly = false
 })
 
-local Lvl13 = Window:MakeTab({
+local FuseGem1Tab = Window:MakeTab({
     Name = "Lvl 13",
+    Icon = "rbxassetid://4483345998", PremiumOnly = false
+})
+
+local FuseGem3Tab = Window:MakeTab({
+    Name = "Delete Gems",
     Icon = "rbxassetid://4483345998", PremiumOnly = false
 })
 
@@ -160,7 +165,7 @@ local function DeleteUnequippedGems()
 end
 
 -- Toggle cho tab Lvl 10
-Lvl10:AddToggle({
+FuseGem2Tab:AddToggle({
     Name = "Auto Fuse All Level 10 Gems",
     Callback = function(fuseLevel10Gems)
         if fuseLevel10Gems then
@@ -177,26 +182,8 @@ Lvl10:AddToggle({
     end
 })
 
--- Toggle xóa gem cho tab Lvl 10
-Lvl10:AddToggle({
-    Name = "Delete Unequipped Gems",
-    Callback = function(deleteGems)
-        if deleteGems then
-            getgenv().Settings.deleteGems = true
-            spawn(function()
-                while getgenv().Settings.deleteGems do
-                    DeleteUnequippedGems() -- Xóa các gem không được trang bị
-                    wait(0.1)
-                end
-            end)
-        else
-            getgenv().Settings.deleteGems = false
-        end
-    end
-})
-
 -- Toggle cho tab Lvl 13
-Lvl13:AddToggle({
+FuseGem1Tab:AddToggle({
     Name = "Auto Fuse All Level 13 Gems",
     Callback = function(fuseLevel13Gems)
         if fuseLevel13Gems then
@@ -213,8 +200,8 @@ Lvl13:AddToggle({
     end
 })
 
--- Toggle xóa gem cho tab Lvl 13
-Lvl13:AddToggle({
+-- Toggle xóa gem cho tab Delete Gems
+FuseGem3Tab:AddToggle({
     Name = "Delete Unequipped Gems",
     Callback = function(deleteGems)
         if deleteGems then
@@ -230,6 +217,7 @@ Lvl13:AddToggle({
         end
     end
 })
+
 
 
 
