@@ -146,7 +146,7 @@ end
 FuseGem1Tab:AddButton({
     Name = "Fuse all gems to level 13",
     Callback = function()
-        FuseGems(1, 13) -- Fuse all gems from level 1 to 13
+        FuseGems(1, 12) -- Fuse all gems from level 1 to 13
     end
 })
 
@@ -154,7 +154,7 @@ FuseGem1Tab:AddButton({
 FuseGem2Tab:AddButton({
     Name = "Fuse all gems to level 10",
     Callback = function()
-        FuseGems(1, 10) -- Fuse all gems from level 1 to 10
+        FuseGems(1, 9) -- Fuse all gems from level 1 to 10
     end
 })
 
