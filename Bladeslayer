@@ -71,35 +71,17 @@ end});
 
 
 
-local FuseGem13Tab = Window:MakeTab({
-    Name = "Dupe Gem to 13",
+local DupeGemTab = Window:MakeTab({
+    Name = "Dupe Gem",
     Icon = "rbxassetid://4483345998", 
     PremiumOnly = false
 })
 
-local FuseGem10Tab = Window:MakeTab({
-    Name = "Dupe Gem to 10",
+local DupeColorGemTab = Window:MakeTab({
+    Name = "Dupe Color Gem",
     Icon = "rbxassetid://4483345998", 
     PremiumOnly = false
 })
-
-local FuseGem113Tab = Window:MakeTab({
-    Name = "Dupe color Gem to 113",
-    Icon = "rbxassetid://4483345998", 
-    PremiumOnly = false
-})
-
-local FuseGem110Tab = Window:MakeTab({
-    Name = "Dupe color Gem to 110",
-    Icon = "rbxassetid://4483345998", 
-    PremiumOnly = false
-})
-
--- Biến để kiểm soát trạng thái toggle
-local isFusing13 = false
-local isFusing10 = false
-local isFusing113 = false
-local isFusing110 = false
 
 -- Function to get next gem ID by current level
 local function GetNextGemID(currentLevel)
@@ -159,14 +141,13 @@ local function FuseGems(startLevel, endLevel)
 end
 
 -- Toggle for fusing all gems to level 13 with reload
-FuseGem13Tab:AddToggle({
+DupeGemTab:AddToggle({
     Name = "Auto Fuse all gems to level 13",
     Default = false,
     Callback = function(value)
-        isFusing13 = value
         if value then
             print("Auto Fuse to Level 13 is ON")
-            while isFusing13 do
+            while value do
                 FuseGems(1, 12) -- Fuse from level 1 to 12
                 print("Reloading...")
                 task.wait(0.1) -- Small delay between reloads
@@ -177,14 +158,13 @@ FuseGem13Tab:AddToggle({
 })
 
 -- Toggle for fusing all gems to level 10 with reload
-FuseGem10Tab:AddToggle({
+DupeGemTab:AddToggle({
     Name = "Auto Fuse all gems to level 10",
     Default = false,
     Callback = function(value)
-        isFusing10 = value
         if value then
             print("Auto Fuse to Level 10 is ON")
-            while isFusing10 do
+            while value do
                 FuseGems(1, 9) -- Fuse from level 1 to 9
                 print("Reloading...")
                 task.wait(0.2) -- Small delay between reloads
@@ -195,14 +175,13 @@ FuseGem10Tab:AddToggle({
 })
 
 -- Toggle for fusing all gems to level 113 with reload
-FuseGem113Tab:AddToggle({
+DupeColorGemTab:AddToggle({
     Name = "Auto Fuse all gems to level 113",
     Default = false,
     Callback = function(value)
-        isFusing113 = value
         if value then
             print("Auto Fuse to Level 113 is ON")
-            while isFusing113 do
+            while value do
                 FuseGems(100, 112) -- Fuse from level 100 to 112
                 print("Reloading...")
                 task.wait(0.2) -- Small delay between reloads
@@ -213,15 +192,14 @@ FuseGem113Tab:AddToggle({
 })
 
 -- Toggle for fusing all gems to level 110 with reload
-FuseGem110Tab:AddToggle({
+DupeColorGemTab:AddToggle({
     Name = "Auto Fuse all gems to level 110",
     Default = false,
     Callback = function(value)
-        isFusing110 = value
         if value then
             print("Auto Fuse to Level 110 is ON")
-            while isFusing110 do
-                FuseGems(10, 109) -- Fuse from level 10 to 110
+            while value do
+                FuseGems(100, 109) -- Fuse from level 100 to 109
                 print("Reloading...")
                 task.wait(0.2) -- Small delay between reloads
             end
@@ -229,6 +207,7 @@ FuseGem110Tab:AddToggle({
         end
     end
 })
+
 
 
 
