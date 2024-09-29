@@ -81,8 +81,8 @@ local FuseGem2Tab = Window:MakeTab({
     Icon = "rbxassetid://4483345998", PremiumOnly = false
 })
 
--- Hàm để lấy ID của gem tiếp theo
-local function GetNextGemID(currentLevel)
+-- Hàm lấy ID và cấp độ của tất cả gem dưới một cấp độ nhất định
+local function GetGemIDsUnderLevel(maxLevel)
     local player = game.Players.LocalPlayer
     local gui = player:WaitForChild("PlayerGui")
     local gemsPanel = gui:WaitForChild("GemsPanel")
@@ -90,14 +90,16 @@ local function GetNextGemID(currentLevel)
     local bgImage = frame:WaitForChild("BgImage")
     local list = bgImage:WaitForChild("List")
     local scrollingFrame = list:WaitForChild("ScrollingFrame")
+    
+    local gemData = {}
 
     if scrollingFrame then
         for _, child in ipairs(scrollingFrame:GetChildren()) do
             local numtext = child:FindFirstChild("NumText")
             if numtext then
                 local level = tonumber(numtext.Text:match("%d+"))
-                if level == currentLevel then
-                    return child.Name -- Return the ID of the gem
+                if level < maxLevel then
+                    table.insert(gemData, {id = child.Name, level = level}) -- Thêm ID và cấp độ của gem vào danh sách
                 end
             end
         end
@@ -105,55 +107,54 @@ local function GetNextGemID(currentLevel)
         error("Error: ScrollingFrame not found.")
     end
 
-    return nil
+    return gemData
 end
 
--- Hàm fuse gems theo maxLevel và tabObject
-local function FuseGems(maxLevel, tabObject)
-    local function FuseGemsHelper(currentLevel)
-        local gemID = GetNextGemID(currentLevel)
+-- Hàm fuse gem đến cấp độ mong muốn
+local function AutoFuseGemToLevel(targetLevel)
+    local gemData = GetGemIDsUnderLevel(targetLevel) -- Lấy tất cả gem dưới cấp độ mong muốn
 
-        if gemID then
-            print("Level", currentLevel, "gem ID found:", gemID)
-            currentLevel = currentLevel + 1 -- Tăng cấp độ cho lần lặp tiếp theo
+    for _, gem in ipairs(gemData) do
+        local currentLevel = gem.level
 
+        while currentLevel < targetLevel do
             -- Tạo tham số cho hàm fuse
             local args = {
                 [1] = {
-                    [1] = gemID,
-                    [2] = gemID,
-                    [3] = gemID,
-                    [4] = gemID,
-                    [5] = gemID
+                    [1] = gem.id,
+                    [2] = gem.id,
+                    [3] = gem.id,
+                    [4] = gem.id,
+                    [5] = gem.id
                 }
             }
 
-            print("Invoking FuseGem remote with args:", args)
+            -- Thực hiện fuse gem
             game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("FuseGem"):InvokeServer(unpack(args))
-
-            -- Chờ một chút trước khi kiểm tra cấp độ tiếp theo
-            wait(0.000001)
-
-            FuseGemsHelper(currentLevel)
-        else
-            print("Error: Could not find gem ID for level", currentLevel)
+            print("Fused gem ID:", gem.id, "from level", currentLevel, "to level", currentLevel + 1)
+            
+            -- Cập nhật cấp độ gem sau khi fuse
+            currentLevel = currentLevel + 1
+            wait(0.00001) -- Chờ một chút giữa các lần fuse để tránh quá tải
         end
-    end
-
-    -- Tạo nút cho từng cấp độ
-    for level = 1, maxLevel do
-        tabObject:AddButton({
-            Name = "Fuse Gem to level " .. tostring(maxLevel) .. " w/ Lv." .. level,
-            Callback = function()
-                FuseGemsHelper(level)
-            end
-        })
     end
 end
 
--- Gọi hàm FuseGems cho mỗi tab
-FuseGems(13, FuseGem1Tab) -- Tab cho cấp độ 13
-FuseGems(10, FuseGem2Tab) -- Tab cho cấp độ 10
+-- Mã cho Tab Lvl 13
+FuseGem1Tab:AddButton({
+    Name = "Auto Fuse all to level 13",
+    Callback = function()
+        AutoFuseGemToLevel(13) -- Fuse gem đến cấp độ 13
+    end
+})
+
+-- Mã cho Tab Lvl 10
+FuseGem2Tab:AddButton({
+    Name = "Auto Fuse all to level 10",
+    Callback = function()
+        AutoFuseGemToLevel(10) -- Fuse gem đến cấp độ 10
+    end
+})
 
 
 
