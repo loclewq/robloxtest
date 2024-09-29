@@ -1,6 +1,6 @@
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 -- Bogus Performance Evaluation: x1.000
-local Window = OrionLib:MakeWindow({Name = "LocLe", HidePremium = false, SaveConfig = true, ConfigFolder = "Sigma"});
+local Window = OrionLib:MakeWindow({Name = "Auto-ByLocLe", HidePremium = false, SaveConfig = true, ConfigFolder = "Sigma"});
 
 getgenv().Settings = {
     AutoFarm = false,
