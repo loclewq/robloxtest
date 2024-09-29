@@ -221,7 +221,7 @@ FuseGem110Tab:AddToggle({
         if value then
             print("Auto Fuse to Level 110 is ON")
             while isFusing110 do
-                FuseGems(100, 109) -- Fuse from level 10 to 110
+                FuseGems(10, 109) -- Fuse from level 10 to 110
                 print("Reloading...")
                 task.wait(0.2) -- Small delay between reloads
             end
@@ -487,25 +487,7 @@ EGG1:AddToggle({
     end
 });
 
-Lvl10:AddToggle({Name="Gemdupe",Callback=function(fuseLevel10Gems)
-	if fuseLevel10Gems then
-		getgenv().Settings.fuseLevel10Gems = true;
-		pcall(function()
-			local WeaponsInventory = require(game:GetService("ReplicatedStorage").Scripts.Client.Manager.PlayerManager);
-			for _, gem in pairs(WeaponsInventory.localPlayerData.gems) do
-				pcall(function()
-					if ((gem.equipPosition == nil) or (gem.equipPosition == "")) then
-						local args = {[1]={[1]=gem.guid,[2]=gem.guid,[3]=gem.guid,[4]=gem.guid,[5]=gem.guid}};
-						game:GetService("ReplicatedStorage").Remotes.FuseGem:InvokeServer(unpack(args));
-						wait();
-					end
-				end);
-			end
-		end);
-	else
-		getgenv().Settings.fuseLevel10Gems = false;
-	end
-end});
+
 
 Lvl10:AddToggle({Name="Delete Gems",Callback=function(deleteGems)
 	if deleteGems then
