@@ -95,7 +95,7 @@ local function GetNextGemID(currentLevel)
             if numtext then
                 local level = tonumber(numtext.Text:match("%d+"))
                 if level == currentLevel then
-                    return child.Name -- Return the ID of the gem
+                    return child.Name -- Trả về ID của gem
                 end
             end
         end
@@ -111,14 +111,15 @@ FuseGem1Tab:AddButton({
     Name = "Auto Fuse to level 13",
     Callback = function()
         local currentLevel = 1 -- Bắt đầu từ cấp độ 1
+        local continueFusing = true -- Biến để kiểm soát việc tiếp tục fuse
 
-        while currentLevel <= 12 do
+        while continueFusing do
             local gemID = GetNextGemID(currentLevel)
 
             if gemID then
                 print("Fusing Level", currentLevel, "gem ID found:", gemID)
 
-                -- Construct the args table with gemID repeated five times
+                -- Tạo tham số cho hàm fuse
                 local args = {
                     [1] = {
                         [1] = gemID,
@@ -133,12 +134,11 @@ FuseGem1Tab:AddButton({
                 print("Invoked FuseGem for Level", currentLevel)
 
                 currentLevel = currentLevel + 1 -- Tăng cấp độ
+                wait(0.5) -- Chờ một chút giữa các lần fuse
             else
                 print("Error: Could not find gem ID for level", currentLevel)
-                break -- Dừng nếu không tìm thấy gem
+                continueFusing = false -- Dừng nếu không tìm thấy gem
             end
-
-            wait(0.0001) -- Chờ một chút giữa các lần fuse để tránh quá tải
         end
     end
 })
@@ -148,14 +148,15 @@ FuseGem2Tab:AddButton({
     Name = "Auto Fuse to level 10",
     Callback = function()
         local currentLevel = 1 -- Bắt đầu từ cấp độ 1
+        local continueFusing = true -- Biến để kiểm soát việc tiếp tục fuse
 
-        while currentLevel <= 9 do
+        while continueFusing do
             local gemID = GetNextGemID(currentLevel)
 
             if gemID then
                 print("Fusing Level", currentLevel, "gem ID found:", gemID)
 
-                -- Construct the args table with gemID repeated five times
+                -- Tạo tham số cho hàm fuse
                 local args = {
                     [1] = {
                         [1] = gemID,
@@ -170,15 +171,15 @@ FuseGem2Tab:AddButton({
                 print("Invoked FuseGem for Level", currentLevel)
 
                 currentLevel = currentLevel + 1 -- Tăng cấp độ
+                wait(0.5) -- Chờ một chút giữa các lần fuse
             else
                 print("Error: Could not find gem ID for level", currentLevel)
-                break -- Dừng nếu không tìm thấy gem
+                continueFusing = false -- Dừng nếu không tìm thấy gem
             end
-
-            wait(0.0001) -- Chờ một chút giữa các lần fuse để tránh quá tải
         end
     end
 })
+
 
 
 
