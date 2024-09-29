@@ -327,7 +327,7 @@ DupeGemTab:AddToggle({
             while isFusingTo13 do
                 FuseGems(1, 12) -- Fuse from level 1 to 12
                 print("Reloading...")
-                task.wait(0.1) -- Small delay between reloads
+                task.wait() -- Small delay between reloads
             end
             print("Auto Fuse to Level 13 is OFF")
         end
@@ -345,7 +345,7 @@ DupeGemTab:AddToggle({
             while isFusingTo10 do
                 FuseGems(1, 9) -- Fuse from level 1 to 9
                 print("Reloading...")
-                task.wait(0.2) -- Small delay between reloads
+                task.wait() -- Small delay between reloads
             end
             print("Auto Fuse to Level 10 is OFF")
         end
@@ -363,7 +363,7 @@ DupeColorGemTab:AddToggle({
             while isFusingTo113 do
                 FuseGems(100, 112) -- Fuse from level 100 to 112
                 print("Reloading...")
-                task.wait(0.2) -- Small delay between reloads
+                task.wait(0.0001) -- Small delay between reloads
             end
             print("Auto Fuse to Level 113 is OFF")
         end
@@ -381,7 +381,7 @@ DupeColorGemTab:AddToggle({
             while isFusingTo110 do
                 FuseGems(100, 109) -- Fuse from level 100 to 109
                 print("Reloading...")
-                task.wait(0.2) -- Small delay between reloads
+                task.wait(0.0001) -- Small delay between reloads
             end
             print("Auto Fuse to Level 110 is OFF")
         end
