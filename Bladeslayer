@@ -1,6 +1,6 @@
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 -- Bogus Performance Evaluation: x1.000
-local Window = OrionLib:MakeWindow({Name = "Cool Hub", HidePremium = false, SaveConfig = true, ConfigFolder = "Sigma"});
+local Window = OrionLib:MakeWindow({Name = "LocLe", HidePremium = false, SaveConfig = true, ConfigFolder = "Sigma"});
 
 getgenv().Settings = {
     AutoFarm = false,
@@ -66,7 +66,153 @@ EMount:AddButton({Name="Use Selected Mount",Callback=function()
 		warn("No mount selected.");
 	end
 end});
+local FuseGem1Tab = Window:MakeTab({
+        Name = "Lvl 10 Dupe",
+        Icon = "rbxassetid://4483345998", PremiumOnly = false
+    })
 
+    local FuseGem2Tab = Window:MakeTab({
+        Name = "Lvl 9 Dupe",
+        Icon = "rbxassetid://4483345998", PremiumOnly = false
+    })
+
+    for level = 1, 9 do
+        FuseGem1Tab:AddButton({
+            Name = "Fuse Gem to level 10 w/ Lv." .. level,
+            Callback = function()
+                local function GetNextGemID(currentLevel)
+                    local player = game.Players.LocalPlayer
+
+                    local gui = player:WaitForChild("PlayerGui")
+                    local gemsPanel = gui:WaitForChild("GemsPanel")
+                    local frame = gemsPanel:WaitForChild("Frame")
+                    local bgImage = frame:WaitForChild("BgImage")
+                    local list = bgImage:WaitForChild("List")
+                    local scrollingFrame = list:WaitForChild("ScrollingFrame")
+
+                    if scrollingFrame then
+                        for _, child in ipairs(scrollingFrame:GetChildren()) do
+                            local numtext = child:FindFirstChild("NumText")
+
+                            if numtext then
+                                local level = tonumber(numtext.Text:match("%d+"))
+                                if level == currentLevel then
+                                    return child.Name -- Return the ID of the gem
+                                end
+                            end
+                        end
+                    else
+                        error("Error: ScrollingFrame not found.")
+                    end
+
+                    return nil
+                end
+
+                local function FuseGems()
+                    local currentLevel = level
+
+                    while currentLevel <= 10 do
+                        local gemID = GetNextGemID(currentLevel)
+
+                        if gemID then
+                            print("Level", currentLevel, "gem ID found:", gemID)
+                            currentLevel = currentLevel + 1 -- Increment the level for the next iteration
+
+                            local args = {
+                                [1] = {
+                                    [1] = gemID,
+                                    [2] = gemID,
+                                    [3] = gemID,
+                                    [4] = gemID,
+                                    [5] = gemID
+                                }
+                            }
+
+                            print("Invoking FuseGem remote with args:", args)
+
+                            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("FuseGem"):InvokeServer(unpack(args))
+                        else
+                            print("Error: Could not find gem ID for level", currentLevel)
+                        end
+                        wait(0.000001)
+                    end
+                end
+
+                FuseGems()
+            end
+        })
+    end
+
+    for level = 1, 9 do
+        FuseGem2Tab:AddButton({
+            Name = "Fuse Gem to level 9 w/ Lv." .. level,
+            Callback = function()
+                local function GetNextGemID(currentLevel)
+                    local player = game.Players.LocalPlayer
+
+                    local gui = player:WaitForChild("PlayerGui")
+                    local gemsPanel = gui:WaitForChild("GemsPanel")
+                    local frame = gemsPanel:WaitForChild("Frame")
+                    local bgImage = frame:WaitForChild("BgImage")
+                    local list = bgImage:WaitForChild("List")
+                    local scrollingFrame = list:WaitForChild("ScrollingFrame")
+
+                    if scrollingFrame then
+                        for _, child in ipairs(scrollingFrame:GetChildren()) do
+                            local numtext = child:FindFirstChild("NumText")
+
+                            if numtext then
+                                local level = tonumber(numtext.Text:match("%d+"))
+                                if level == currentLevel then
+                                    return child.Name -- Return the ID of the gem
+                                end
+                            end
+                        end
+                    else
+                        error("Error: ScrollingFrame not found.")
+                    end
+
+                    -- If no matching gem ID was found, return nil
+                    return nil
+                end
+
+                local function FuseGems()
+                    local currentLevel = level
+
+                    while currentLevel <= 8 do
+                        local gemID = GetNextGemID(currentLevel)
+
+                        if gemID then
+                            print("Level", currentLevel, "gem ID found:", gemID)
+                            currentLevel = currentLevel + 1 -- Increment the level for the next iteration
+
+                            -- Construct the args table with gemID repeated five times
+                            local args = {
+                                [1] = {
+                                    [1] = gemID,
+                                    [2] = gemID,
+                                    [3] = gemID,
+                                    [4] = gemID,
+                                    [5] = gemID
+                                }
+                            }
+
+                            print("Invoking FuseGem remote with args:", args)
+
+                            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("FuseGem"):InvokeServer(unpack(args))
+                        else
+                            print("Error: Could not find gem ID for level", currentLevel)
+                        end
+
+                        -- Wait for some time before checking for the next level
+                        wait(0.000001)
+                    end
+                end
+
+                FuseGems()
+            end
+        })
+    end
 FarmSec:AddToggle({Name="Auto Collect Drops",Callback=function(v1)
 	if v1 then
 		getgenv().Settings.GoldCollect = not getgenv().Settings.GoldCollect;
