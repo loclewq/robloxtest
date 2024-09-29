@@ -148,7 +148,7 @@ FuseGem1Tab:AddToggle({
         if value then
             -- Start from level 1 and fuse up to level 13
             for i = 1, 12 do
-                FuseGems(i, 13)
+                FuseGems(i, 12)
             end
         else
             print("Auto Fuse to Level 13 is OFF")
@@ -164,7 +164,7 @@ FuseGem2Tab:AddToggle({
         if value then
             -- Start from level 1 and fuse up to level 10
             for i = 1, 9 do
-                FuseGems(i, 10)
+                FuseGems(i, 9)
             end
         else
             print("Auto Fuse to Level 10 is OFF")
