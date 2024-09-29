@@ -147,7 +147,7 @@ FuseGem1Tab:AddToggle({
     Callback = function(value)
         if value then
             -- Start from level 1 and fuse up to level 13
-            for i = 1, 13 do
+            for i = 1, 12 do
                 FuseGems(i, 13)
             end
         else
@@ -163,7 +163,7 @@ FuseGem2Tab:AddToggle({
     Callback = function(value)
         if value then
             -- Start from level 1 and fuse up to level 10
-            for i = 1, 10 do
+            for i = 1, 9 do
                 FuseGems(i, 10)
             end
         else
