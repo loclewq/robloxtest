@@ -1,6 +1,6 @@
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 -- Bogus Performance Evaluation: x1.000
-local Window = OrionLib:MakeWindow({Name = "LocLe", HidePremium = false, SaveConfig = true, ConfigFolder = "Sigma"});
+local Window = OrionLib:MakeWindow({Name = "Cool Hub", HidePremium = false, SaveConfig = true, ConfigFolder = "Sigma"});
 
 getgenv().Settings = {
     AutoFarm = false,
@@ -51,12 +51,12 @@ for _, name in pairs(nameMap) do
 	table.insert(mountNames, name);
 end
 EMount:AddDropdown({Name="Select Mount",Options=mountNames,Callback=function(selectedMount)
-	getgenv().getgenv().Settings.selectedMount = selectedMount;
+	getgenv().Settings.selectedMount = selectedMount;
 end});
 EMount:AddButton({Name="Use Selected Mount",Callback=function()
-	if getgenv().getgenv().Settings.selectedMount then
+	if getgenv().Settings.selectedMount then
 		for id, name in pairs(nameMap) do
-			if (name == getgenv().getgenv().Settings.selectedMount) then
+			if (name == getgenv().Settings.selectedMount) then
 				local args = {[1]=id};
 				game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("EquipMount"):FireServer(unpack(args));
 				break;
@@ -67,72 +67,10 @@ EMount:AddButton({Name="Use Selected Mount",Callback=function()
 	end
 end});
 
-FarmSec:AddToggle({Name="Auto Farm",Callback=function(value)
-		getgenv().getgenv().Settings.AutoFarm = value;
-end});
-
-
-local WeaponsInventory = require(game:GetService("ReplicatedStorage").Scripts.Client.Manager.PlayerManager)
-pcall(function()
-    for _, v in pairs(WeaponsInventory.localPlayerData.heros) do
-        if v.isEquip == true and v.isLock == true then
-            table.insert(getgenv().getgenv().Settings.mespetsequiper, v.guid)
-        end
-    end
-end)
-
-spawn(function()
-    local function GetEnemies()
-        local nearest, dist = nil, getgenv().getgenv().Settings.Range
-        local Players = game.Players
-        local localPlayer = Players.LocalPlayer
-        local localCharacter = localPlayer.Character
-        local humanoidRootPart = localCharacter and localCharacter:FindFirstChild("HumanoidRootPart")
-        if not humanoidRootPart then
-            return
-        end
-
-        for _, enemy in pairs(Workspace.Enemys:GetChildren()) do
-            if enemy:FindFirstChild("HumanoidRootPart") and enemy.HumanoidRootPart:FindFirstChild("EnemyNameGui") and enemy.HumanoidRootPart.EnemyNameGui.HealthNum.Text ~= "0" then
-                local distance = (humanoidRootPart.Position - enemy.HumanoidRootPart.Position).magnitude
-                if distance < dist then
-                    dist = distance
-                    nearest = enemy
-                end
-            end
-        end
-        return nearest
-    end
-
-    while task.wait() do
-        if getgenv().getgenv().Settings.AutoFarm then
-            local nearestEnemy = GetEnemies()
-            if nearestEnemy then
-                if getgenv().getgenv().Settings.WalkToEnemy then
-                    if nearestEnemy:FindFirstChild("HumanoidRootPart") then
-                        player.Character.Humanoid:MoveTo(nearestEnemy.HumanoidRootPart.Position)
-                    end
-                end
-
-                if getgenv().getgenv().Settings.DamageBoost then
-                    for _, petGuid in pairs(getgenv().getgenv().Settings.mespetsequiper) do
-                        local args = { { ["heroGuid"] = tostring(petGuid), ["harmIndex"] = 1, ["isSkill"] = false, ["skillId"] = 200003 } }
-                        game:GetService("ReplicatedStorage").Remotes.HeroSkillHarm:FireServer(unpack(args))
-                    end
-                end
-
-                local args = { nearestEnemy:GetAttribute("EnemyGuid") }
-                game:GetService("ReplicatedStorage").Remotes.ClickEnemy:InvokeServer(unpack(args))
-                game:GetService("ReplicatedStorage").Remotes.PlayerClickAttack:FireServer(unpack(args))
-            end
-        end
-    end
-end)
-
 FarmSec:AddToggle({Name="Auto Collect Drops",Callback=function(v1)
 	if v1 then
-		getgenv().getgenv().Settings.GoldCollect = not getgenv().getgenv().Settings.GoldCollect;
-		if getgenv().getgenv().Settings.GoldCollect then
+		getgenv().Settings.GoldCollect = not getgenv().Settings.GoldCollect;
+		if getgenv().Settings.GoldCollect then
 			spawn(function()
 				while wait() do
 					for v8, v9 in pairs(game.Workspace.Golds:GetChildren()) do
@@ -173,15 +111,15 @@ game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Playe
 
 SwordSec:AddToggle({Name="Auto Fuse Swords",Callback=function(autoFuseSwords)
 	if autoFuseSwords then
-		getgenv().getgenv().Settings.autoFuseSwords = true;
-		while getgenv().getgenv().Settings.autoFuseSwords do
+		getgenv().Settings.autoFuseSwords = true;
+		while getgenv().Settings.autoFuseSwords do
 			wait(1);
 			pcall(function()
 				game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("FuseWeapon"):FireServer();
 			end);
 		end
 	else
-		getgenv().getgenv().Settings.autoFuseSwords = false;
+		getgenv().Settings.autoFuseSwords = false;
 	end
 end});
 
@@ -192,7 +130,7 @@ pcall(function()
     if WeaponsInventory.localPlayerData then
         for _, v in pairs(WeaponsInventory.localPlayerData.weapons) do
             if v.isEquip and v.isLock then
-                table.insert(getgenv().getgenv().Settings.mespetsequiper, v.guid);
+                table.insert(getgenv().Settings.mespetsequiper, v.guid);
             end
         end
     else
@@ -204,8 +142,8 @@ SwordSec:AddToggle({
     Name="Auto Delete Weapons",
     Callback=function(autoSellWeapons)
         if autoSellWeapons then
-            getgenv().getgenv().Settings.autoSellWeapons = true;
-            while getgenv().getgenv().Settings.autoSellWeapons do
+            getgenv().Settings.autoSellWeapons = true;
+            while getgenv().Settings.autoSellWeapons do
                 wait(1);
                 if WeaponsInventory.localPlayerData then
                     for _, v in pairs(WeaponsInventory.localPlayerData.weapons) do
@@ -219,15 +157,15 @@ SwordSec:AddToggle({
                 end
             end
         else
-            getgenv().getgenv().Settings.autoSellWeapons = false;
+            getgenv().Settings.autoSellWeapons = false;
         end
     end
 });
 
 SwordSec:AddToggle({Name="Auto Forge Equipped Sword",Callback=function(autoForgeSword)
 	if autoForgeSword then
-		getgenv().getgenv().Settings.autoForgeSword = true;
-		while getgenv().getgenv().Settings.autoForgeSword do
+		getgenv().Settings.autoForgeSword = true;
+		while getgenv().Settings.autoForgeSword do
 			wait(1e-7);
 			for _, v in pairs(WeaponsInventory.localPlayerData.weapons) do
 				if v.isEquip then
@@ -237,7 +175,7 @@ SwordSec:AddToggle({Name="Auto Forge Equipped Sword",Callback=function(autoForge
 			end
 		end
 	else
-		getgenv().getgenv().Settings.autoForgeSword = false;
+		getgenv().Settings.autoForgeSword = false;
 	end
 end});
 
@@ -293,7 +231,7 @@ pcall(function()
     if BurgerInventory.localPlayerData then
         for _, v in pairs(BurgerInventory.localPlayerData.heros) do
             if v.isEquip and v.isLock then
-                table.insert(getgenv().getgenv().Settings.mespetsequiper, v.guid);
+                table.insert(getgenv().Settings.mespetsequiper, v.guid);
             end
         end
     else
@@ -304,15 +242,12 @@ end);
 EGG1:AddLabel("Will Fuse to Equiped Heroes")
 EGG1:AddLabel("Will Delete/Fuse The Uneqquiped and Unlocked Heroes")
 
-
-
-
 EGG1:AddToggle({
     Name="Auto Delete Heroes",
     Callback=function(autoSellHeroes)
         if autoSellHeroes then
-            getgenv().getgenv().Settings.autoSellHeroes = true;
-            while getgenv().getgenv().Settings.autoSellHeroes do
+            getgenv().Settings.autoSellHeroes = true;
+            while getgenv().Settings.autoSellHeroes do
                 wait(1);
                 if BurgerInventory.localPlayerData then
                     for _, v in pairs(BurgerInventory.localPlayerData.heros) do
@@ -326,7 +261,7 @@ EGG1:AddToggle({
                 end
             end
         else
-            getgenv().getgenv().Settings.autoSellHeroes = false;
+            getgenv().Settings.autoSellHeroes = false;
         end
     end
 });
@@ -335,8 +270,8 @@ EGG1:AddToggle({
     Name="Auto Fuse Heroes",
     Callback=function(autoFuseHeroes)
         if autoFuseHeroes then
-            getgenv().getgenv().Settings.autoFuseHeroes = true;
-            while getgenv().getgenv().Settings.autoFuseHeroes do
+            getgenv().Settings.autoFuseHeroes = true;
+            while getgenv().Settings.autoFuseHeroes do
                 wait(1);
                 if BurgerInventory.localPlayerData then
                     local equippedHeroGuid = nil;
@@ -362,14 +297,14 @@ EGG1:AddToggle({
                 end
             end
         else
-            getgenv().getgenv().Settings.autoFuseHeroes = false;
+            getgenv().Settings.autoFuseHeroes = false;
         end
     end
 });
 
-Lvl10:AddToggle({Name="Fuse Level 10 Gems",Callback=function(fuseLevel10Gems)
+Lvl10:AddToggle({Name="Gemdupe?,Callback=function(fuseLevel10Gems)
 	if fuseLevel10Gems then
-		getgenv().getgenv().Settings.fuseLevel10Gems = true;
+		getgenv().Settings.fuseLevel10Gems = true;
 		pcall(function()
 			local WeaponsInventory = require(game:GetService("ReplicatedStorage").Scripts.Client.Manager.PlayerManager);
 			for _, gem in pairs(WeaponsInventory.localPlayerData.gems) do
@@ -383,13 +318,13 @@ Lvl10:AddToggle({Name="Fuse Level 10 Gems",Callback=function(fuseLevel10Gems)
 			end
 		end);
 	else
-		getgenv().getgenv().Settings.fuseLevel10Gems = false;
+		getgenv().Settings.fuseLevel10Gems = false;
 	end
 end});
 
 Lvl10:AddToggle({Name="Delete Gems",Callback=function(deleteGems)
 	if deleteGems then
-		getgenv().getgenv().Settings.deleteGems = true;
+		getgenv().Settings.deleteGems = true;
 		pcall(function()
 			local WeaponsInventory = require(game:GetService("ReplicatedStorage").Scripts.Client.Manager.PlayerManager);
 			for _, gem in pairs(WeaponsInventory.localPlayerData.gems) do
@@ -403,84 +338,10 @@ Lvl10:AddToggle({Name="Delete Gems",Callback=function(deleteGems)
 			end
 		end);
 	else
-		getgenv().getgenv().Settings.deleteGems = false;
+		getgenv().Settings.deleteGems = false;
 	end
 end});
-
-local function GetFirstFiveGemIDs(level)
-	local player = game.Players.LocalPlayer;
-	local gui = player:WaitForChild("PlayerGui");
-	local gemsPanel = gui:WaitForChild("GemsPanel");
-	local frame = gemsPanel:WaitForChild("Frame");
-	local bgImage = frame:WaitForChild("BgImage");
-	local list = bgImage:WaitForChild("List");
-	local scrollingFrame = list:WaitForChild("ScrollingFrame");
-	local gem1, gem2, gem3, gem4, gem5;
-	if scrollingFrame then
-		local count = 0;
-		for _, child in ipairs(scrollingFrame:GetChildren()) do
-			if (count >= 5) then
-				break;
-			end
-			local numtext = child:FindFirstChild("NumText");
-			if (numtext and (numtext.Text == ("Lv." .. level))) then
-				count = count + 1;
-				if (count == 1) then
-					gem1 = child.Name;
-				elseif (count == 2) then
-					gem2 = child.Name;
-				elseif (count == 3) then
-					gem3 = child.Name;
-				elseif (count == 4) then
-					gem4 = child.Name;
-				elseif (count == 5) then
-					gem5 = child.Name;
-				end
-			end
-		end
-		if (count > 0) then
-			print("Gem IDs found:");
-			print("gem1:", gem1);
-			print("gem2:", gem2);
-			print("gem3:", gem3);
-			print("gem4:", gem4);
-			print("gem5:", gem5);
-		else
-			print("No gem IDs found.");
-		end
-	else
-		error("Error: ScrollingFrame not found.");
-	end
-	return gem1, gem2, gem3, gem4, gem5;
-end
-local function FuseFirstFiveGems(level)
-	while true do
-		local gem1, gem2, gem3, gem4, gem5 = GetFirstFiveGemIDs(level);
-		if (gem1 and gem2 and gem3 and gem4 and gem5) then
-			local args = {[1]={[1]=gem1,[2]=gem2,[3]=gem3,[4]=gem4,[5]=gem5}};
-			print("Invoking FuseGem remote with args:", args);
-			game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("FuseGem"):InvokeServer(unpack(args));
-		else
-			print("Error: Could not find five gem IDs.");
-		end
-		wait(0.1);
-	end
-end
-
-Lvl10:AddToggle({Name="Auto Fuse All Level Gems",Default=false,Callback=function(Value)
-	getgenv().getgenv().Settings.AutoFuseAllGems = Value;
-	if Value then
-		spawn(function()
-			while getgenv().getgenv().Settings.AutoFuseAllGems do
-				for i = 1, 9 do
-					FuseFirstFiveGems(i);
-				end
-				wait(0.1);
-			end
-		end);
-	end
-end});
-
+	
 function rerollLegendaryMask()
 	local rerollFound = false;
 	repeat
