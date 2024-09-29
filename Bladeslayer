@@ -67,7 +67,7 @@ EMount:AddButton({Name="Use Selected Mount",Callback=function()
 	end
 end});
 local FuseGem1Tab = Window:MakeTab({
-        Name = "Lvl 10 Dupe",
+        Name = "Lvl 15 Dupe",
         Icon = "rbxassetid://4483345998", PremiumOnly = false
     })
 
