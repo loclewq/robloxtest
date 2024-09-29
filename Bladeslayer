@@ -81,6 +81,11 @@ local FuseGem2Tab = Window:MakeTab({
     Icon = "rbxassetid://4483345998", PremiumOnly = false
 })
 
+local FuseGem3Tab = Window:MakeTab({
+    Name = "Delete Gems",
+    Icon = "rbxassetid://4483345998", PremiumOnly = false
+})
+
 -- Hàm lấy ID và cấp độ của tất cả gem dưới một cấp độ nhất định
 local function GetGemIDsUnderLevel(maxLevel)
     local player = game.Players.LocalPlayer
@@ -134,7 +139,7 @@ local function AutoFuseGemToLevel(targetLevel)
             print("Fused gem ID:", gem.id, "from level", currentLevel, "to level", currentLevel + 1)
 
             -- Cập nhật cấp độ gem sau khi fuse
-            wait(0.000001) -- Đợi một chút để cập nhật cấp độ trong giao diện
+            wait(0.00001) -- Đợi một chút để cập nhật cấp độ trong giao diện
             -- Cập nhật lại cấp độ của gem sau mỗi lần fuse
             local updatedGemData = GetGemIDsUnderLevel(targetLevel) -- Lấy lại thông tin gem sau khi fuse
             for _, updatedGem in ipairs(updatedGemData) do
@@ -168,6 +173,33 @@ FuseGem2Tab:AddButton({
         AutoFuseGemToLevel(10) -- Fuse gem đến cấp độ 10
     end
 })
+
+-- Mã cho Tab Delete Gems
+FuseGem3Tab:AddToggle({
+    Name = "Delete Gems",
+    Callback = function(deleteGems)
+        if deleteGems then
+            getgenv().Settings = getgenv().Settings or {}
+            getgenv().Settings.deleteGems = true
+            pcall(function()
+                local WeaponsInventory = require(game:GetService("ReplicatedStorage").Scripts.Client.Manager.PlayerManager)
+                for _, gem in pairs(WeaponsInventory.localPlayerData.gems) do
+                    pcall(function()
+                        if ((gem.equipPosition == nil) or (gem.equipPosition == "")) then
+                            local args = {[1] = {[1] = gem.guid}}
+                            game:GetService("ReplicatedStorage").Remotes.FuseGem:InvokeServer(unpack(args))
+                            print("Deleted gem ID:", gem.guid)
+                            wait() -- Chờ để tránh quá tải
+                        end
+                    end)
+                end
+            end)
+        else
+            getgenv().Settings.deleteGems = false
+        end
+    end
+})
+
 
 
 
