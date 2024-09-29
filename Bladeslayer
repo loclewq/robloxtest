@@ -67,18 +67,18 @@ EMount:AddButton({Name="Use Selected Mount",Callback=function()
 	end
 end});
 local FuseGem1Tab = Window:MakeTab({
-        Name = "Lvl 15 Dupe",
+        Name = "Lvl 13 Dupe",
         Icon = "rbxassetid://4483345998", PremiumOnly = false
     })
 
     local FuseGem2Tab = Window:MakeTab({
-        Name = "Lvl 9 Dupe",
+        Name = "Lvl 10 Dupe",
         Icon = "rbxassetid://4483345998", PremiumOnly = false
     })
 
-    for level = 1, 14 do
+    for level = 1, 12 do
         FuseGem1Tab:AddButton({
-            Name = "Fuse Gem to level 10 w/ Lv." .. level,
+            Name = "Fuse Gem to level 13 w/ Lv." .. level,
             Callback = function()
                 local function GetNextGemID(currentLevel)
                     local player = game.Players.LocalPlayer
@@ -111,7 +111,7 @@ local FuseGem1Tab = Window:MakeTab({
                 local function FuseGems()
                     local currentLevel = level
 
-                    while currentLevel <= 14 do
+                    while currentLevel <= 12 do
                         local gemID = GetNextGemID(currentLevel)
 
                         if gemID then
@@ -143,9 +143,9 @@ local FuseGem1Tab = Window:MakeTab({
         })
     end
 
-    for level = 1, 9 do
+    for level = 1, 10 do
         FuseGem2Tab:AddButton({
-            Name = "Fuse Gem to level 9 w/ Lv." .. level,
+            Name = "Fuse Gem to level 10 w/ Lv." .. level,
             Callback = function()
                 local function GetNextGemID(currentLevel)
                     local player = game.Players.LocalPlayer
@@ -179,7 +179,7 @@ local FuseGem1Tab = Window:MakeTab({
                 local function FuseGems()
                     local currentLevel = level
 
-                    while currentLevel <= 8 do
+                    while currentLevel <= 9 do
                         local gemID = GetNextGemID(currentLevel)
 
                         if gemID then
