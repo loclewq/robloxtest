@@ -69,44 +69,63 @@ end});
 
 
 
--- Thêm Tab cho Buy/Sell Gem và ColorGem
-local GemActionsTab = Window:MakeTab({
-    Name = "Gem Actions",
-    Icon = "rbxassetid://4483345998",
+local DupeGemTab = Window:MakeTab({
+    Name = "Dupe Gem",
+    Icon = "rbxassetid://4483345998", 
     PremiumOnly = false
 })
 
-local ColorGemActionsTab = Window:MakeTab({
-    Name = "ColorGem Actions",
-    Icon = "rbxassetid://4483345998",
+local DupeColorGemTab = Window:MakeTab({
+    Name = "Dupe Color Gem",
+    Icon = "rbxassetid://4483345998", 
     PremiumOnly = false
 })
 
 -- Trạng thái cho các toggle
-local isAutoBuyingGem = false
-local isAutoSellingGem = false
-local isAutoBuyingColorGem = false
-local isAutoSellingColorGem = false
+local isBuyingGem = false
+local isSellingGem = false
+local isBuyingColorGem = false
+local isSellingColorGem = false
 
--- Function để tự động mua gem với các ID khác nhau
-local function AutoBuyGems()
-    local gemIDs = {10004, 10005, 10006} -- Danh sách các ID của gem để mua
+-- Function to get next gem ID by level
+local function GetNextGemID(level)
+    local player = game.Players.LocalPlayer
+    local gui = player:WaitForChild("PlayerGui")
+    local gemsPanel = gui:WaitForChild("GemsPanel")
+    local frame = gemsPanel:WaitForChild("Frame")
+    local bgImage = frame:WaitForChild("BgImage")
+    local list = bgImage:WaitForChild("List")
+    local scrollingFrame = list:WaitForChild("ScrollingFrame")
 
-    for _, gemID in ipairs(gemIDs) do
-        local args = {
-            [1] = gemID
-        }
-        print("Buying Gem with ID:", gemID)
+    if scrollingFrame then
+        for _, child in ipairs(scrollingFrame:GetChildren()) do
+            local numtext = child:FindFirstChild("NumText")
 
-        -- Gửi lệnh mua gem
-        game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("TowerExchange"):FireServer(unpack(args))
-        task.wait(0.2) -- Delay giữa các lệnh mua
+            if numtext then
+                local gemLevel = tonumber(numtext.Text:match("%d+"))
+                if gemLevel == level then
+                    return child.Name -- Return the ID of the gem
+                end
+            end
+        end
+    else
+        error("Error: ScrollingFrame not found.")
     end
+
+    return nil
 end
 
--- Function để bán gem level 10
+-- Function to auto-buy gems
+local function AutoBuyGems()
+    local args = {
+        [1] = 10004 -- Giá trị có thể thay đổi, ví dụ 10005, 10006, ...
+    }
+    game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("TowerExchange"):FireServer(unpack(args))
+    print("Mua gem với ID:", args[1])
+end
+
+-- Function to auto-sell gems level 10
 local function AutoSellGems()
-    -- Tìm gem level 10
     local gemID = GetNextGemID(10)
 
     if gemID then
@@ -118,34 +137,24 @@ local function AutoSellGems()
                 }
             }
         }
-        print("Selling Gem with ID:", gemID)
-
-        -- Gửi lệnh bán gem
+        print("Bán Gem với ID:", gemID)
         game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("DecomposeItems"):FireServer(unpack(args))
     else
         print("Không tìm thấy Gem level 10.")
     end
 end
 
--- Function để tự động mua ColorGem với các ID khác nhau
+-- Function to auto-buy color gems
 local function AutoBuyColorGems()
-    local colorGemIDs = {10017, 10018, 10019, 10020, 10021} -- Danh sách các ID ColorGem để mua
-
-    for _, colorGemID in ipairs(colorGemIDs) do
-        local args = {
-            [1] = colorGemID
-        }
-        print("Buying ColorGem with ID:", colorGemID)
-
-        -- Gửi lệnh mua ColorGem
-        game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("MapShopExchange"):FireServer(unpack(args))
-        task.wait(0.2) -- Delay giữa các lệnh mua
-    end
+    local args = {
+        [1] = 10017 -- Giá trị có thể thay đổi: 10018, 10019, 10020, 10021
+    }
+    game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("MapShopExchange"):FireServer(unpack(args))
+    print("Mua color gem với ID:", args[1])
 end
 
--- Function để bán ColorGem level 110
+-- Function to auto-sell color gems level 110
 local function AutoSellColorGems()
-    -- Tìm ColorGem level 110
     local gemID = GetNextGemID(110)
 
     if gemID then
@@ -157,86 +166,81 @@ local function AutoSellColorGems()
                 }
             }
         }
-        print("Selling ColorGem with ID:", gemID)
-
-        -- Gửi lệnh bán ColorGem
+        print("Bán Color Gem với ID:", gemID)
         game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("DecomposeItems"):FireServer(unpack(args))
     else
-        print("Không tìm thấy ColorGem level 110.")
+        print("Không tìm thấy Color Gem level 110.")
     end
 end
 
--- Toggle để tự động mua gems
-GemActionsTab:AddToggle({
+-- Toggle for buying gems
+DupeGemTab:AddToggle({
     Name = "Auto Buy Gems",
     Default = false,
     Callback = function(value)
-        isAutoBuyingGem = value
-        if isAutoBuyingGem then
+        isBuyingGem = value
+        if isBuyingGem then
             print("Auto Buy Gems is ON")
-            while isAutoBuyingGem do
+            while isBuyingGem do
                 AutoBuyGems()
-                task.wait(0.2) -- Delay giữa các vòng lặp
+                task.wait(1) -- Delay giữa các lần mua
             end
-        else
             print("Auto Buy Gems is OFF")
         end
     end
 })
 
--- Toggle để tự động bán gems
-GemActionsTab:AddToggle({
+-- Toggle for selling gems
+DupeGemTab:AddToggle({
     Name = "Auto Sell Gems",
     Default = false,
     Callback = function(value)
-        isAutoSellingGem = value
-        if isAutoSellingGem then
+        isSellingGem = value
+        if isSellingGem then
             print("Auto Sell Gems is ON")
-            while isAutoSellingGem do
+            while isSellingGem do
                 AutoSellGems()
-                task.wait(0.5) -- Delay giữa các vòng lặp
+                task.wait(1) -- Delay giữa các lần bán
             end
-        else
             print("Auto Sell Gems is OFF")
         end
     end
 })
 
--- Toggle để tự động mua ColorGems
-ColorGemActionsTab:AddToggle({
-    Name = "Auto Buy ColorGems",
+-- Toggle for buying color gems
+DupeColorGemTab:AddToggle({
+    Name = "Auto Buy Color Gems",
     Default = false,
     Callback = function(value)
-        isAutoBuyingColorGem = value
-        if isAutoBuyingColorGem then
-            print("Auto Buy ColorGems is ON")
-            while isAutoBuyingColorGem do
+        isBuyingColorGem = value
+        if isBuyingColorGem then
+            print("Auto Buy Color Gems is ON")
+            while isBuyingColorGem do
                 AutoBuyColorGems()
-                task.wait(0.2) -- Delay giữa các vòng lặp
+                task.wait(1) -- Delay giữa các lần mua
             end
-        else
-            print("Auto Buy ColorGems is OFF")
+            print("Auto Buy Color Gems is OFF")
         end
     end
 })
 
--- Toggle để tự động bán ColorGems
-ColorGemActionsTab:AddToggle({
-    Name = "Auto Sell ColorGems",
+-- Toggle for selling color gems
+DupeColorGemTab:AddToggle({
+    Name = "Auto Sell Color Gems",
     Default = false,
     Callback = function(value)
-        isAutoSellingColorGem = value
-        if isAutoSellingColorGem then
-            print("Auto Sell ColorGems is ON")
-            while isAutoSellingColorGem do
+        isSellingColorGem = value
+        if isSellingColorGem then
+            print("Auto Sell Color Gems is ON")
+            while isSellingColorGem do
                 AutoSellColorGems()
-                task.wait(0.5) -- Delay giữa các vòng lặp
+                task.wait(1) -- Delay giữa các lần bán
             end
-        else
-            print("Auto Sell ColorGems is OFF")
+            print("Auto Sell Color Gems is OFF")
         end
     end
 })
+
 
 
 local DupeGemTab = Window:MakeTab({
