@@ -79,7 +79,7 @@ local FuseGem2Tab = Window:MakeTab({
     Icon = "rbxassetid://4483345998", PremiumOnly = false
 })
 
--- Hàm lấy tất cả gem dưới một cấp độ nhất định
+-- Hàm lấy ID của tất cả gem dưới một cấp độ nhất định
 local function GetGemIDsUnderLevel(maxLevel)
     local player = game.Players.LocalPlayer
     local gui = player:WaitForChild("PlayerGui")
@@ -108,8 +108,8 @@ local function GetGemIDsUnderLevel(maxLevel)
     return gemIDs
 end
 
--- Hàm để tự động nâng cấp tất cả gem lên cấp độ tối đa
-local function AutoFuseAllToLevel(targetLevel)
+-- Hàm để tự động nâng cấp tất cả gem đến cấp độ tối đa
+local function AutoFuseGems(targetLevel)
     local gemIDs = GetGemIDsUnderLevel(targetLevel) -- Lấy tất cả gem dưới cấp độ targetLevel
 
     for _, gemID in ipairs(gemIDs) do
@@ -124,8 +124,8 @@ local function AutoFuseAllToLevel(targetLevel)
             }
         }
 
-        -- Nâng cấp gem lên cấp độ tối đa
-        local currentLevel = tonumber(game.Players.LocalPlayer.PlayerGui.GemsPanel.Frame.BgImage.List.ScrollingFrame[gemID].NumText.Text:match("%d+")) -- Lấy cấp độ hiện tại của gem
+        -- Nâng cấp gem đến cấp độ tối đa
+        local currentLevel = tonumber(game.Players.LocalPlayer.PlayerGui.GemsPanel.Frame.BgImage.List.ScrollingFrame[gemID].NumText.Text:match("%d+"))
 
         while currentLevel < targetLevel do
             game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("FuseGem"):InvokeServer(unpack(args))
@@ -140,7 +140,7 @@ end
 FuseGem1Tab:AddButton({
     Name = "Auto Fuse all to level 13",
     Callback = function()
-        AutoFuseAllToLevel(13) -- Nâng cấp tất cả gem lên cấp độ 13
+        AutoFuseGems(13) -- Nâng cấp tất cả gem lên cấp độ 13
     end
 })
 
@@ -148,9 +148,10 @@ FuseGem1Tab:AddButton({
 FuseGem2Tab:AddButton({
     Name = "Auto Fuse all to level 10",
     Callback = function()
-        AutoFuseAllToLevel(10) -- Nâng cấp tất cả gem lên cấp độ 10
+        AutoFuseGems(10) -- Nâng cấp tất cả gem lên cấp độ 10
     end
 })
+
 
 
 
