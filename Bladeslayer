@@ -72,25 +72,25 @@ end});
 
 
 local FuseGem13Tab = Window:MakeTab({
-    Name = "Lvl 13 Dupe",
+    Name = "Dupe Gem to 13",
     Icon = "rbxassetid://4483345998", 
     PremiumOnly = false
 })
 
 local FuseGem10Tab = Window:MakeTab({
-    Name = "Lvl 10 Dupe",
+    Name = "Dupe Gem to 10",
     Icon = "rbxassetid://4483345998", 
     PremiumOnly = false
 })
 
 local FuseGem113Tab = Window:MakeTab({
-    Name = "Lvl 113 Dupe",
+    Name = "Dupe color Gem to 113",
     Icon = "rbxassetid://4483345998", 
     PremiumOnly = false
 })
 
 local FuseGem110Tab = Window:MakeTab({
-    Name = "Lvl 110 Dupe",
+    Name = "Dupe color Gem to 110",
     Icon = "rbxassetid://4483345998", 
     PremiumOnly = false
 })
@@ -163,6 +163,7 @@ FuseGem13Tab:AddToggle({
                 FuseGems(1, 12) -- Fuse from level 1 to 12
                 print("Reloading...")
                 wait(0.1) -- Small delay between reloads
+                if not value then break end -- Dừng vòng lặp nếu toggle bị tắt
             end
             print("Auto Fuse to Level 13 is OFF")
         end
@@ -180,6 +181,7 @@ FuseGem10Tab:AddToggle({
                 FuseGems(1, 9) -- Fuse from level 1 to 9
                 print("Reloading...")
                 wait(0.2) -- Small delay between reloads
+                if not value then break end -- Dừng vòng lặp nếu toggle bị tắt
             end
             print("Auto Fuse to Level 10 is OFF")
         end
@@ -194,9 +196,10 @@ FuseGem113Tab:AddToggle({
         if value then
             print("Auto Fuse to Level 113 is ON")
             while value do
-                FuseGems(100, 112) -- Fuse from level 100 to 113
+                FuseGems(100, 112) -- Fuse from level 100 to 112
                 print("Reloading...")
                 wait(0.2) -- Small delay between reloads
+                if not value then break end -- Dừng vòng lặp nếu toggle bị tắt
             end
             print("Auto Fuse to Level 113 is OFF")
         end
@@ -211,9 +214,10 @@ FuseGem110Tab:AddToggle({
         if value then
             print("Auto Fuse to Level 110 is ON")
             while value do
-                FuseGems(10, 109) -- Fuse from level 10 to 110
+                FuseGems(100, 109) -- Fuse from level 10 to 110
                 print("Reloading...")
                 wait(0.2) -- Small delay between reloads
+                if not value then break end -- Dừng vòng lặp nếu toggle bị tắt
             end
             print("Auto Fuse to Level 110 is OFF")
         end
