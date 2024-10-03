@@ -318,14 +318,14 @@ end
 
 -- Toggle for fusing all gems to level 13 with reload
 DupeGemTab:AddToggle({
-    Name = "Auto Fuse all gems to level 13",
+    Name = "Auto Fuse all gems to level 15",
     Default = false,
     Callback = function(value)
         isFusingTo13 = value
         if isFusingTo13 then
             print("Auto Fuse to Level 13 is ON")
             while isFusingTo13 do
-                FuseGems(1, 12) -- Fuse from level 1 to 12
+                FuseGems(1, 14) -- Fuse from level 1 to 12
                 print("Reloading...")
                 task.wait() -- Small delay between reloads
             end
@@ -361,7 +361,7 @@ DupeColorGemTab:AddToggle({
         if isFusingTo113 then
             print("Auto Fuse to Level 113 is ON")
             while isFusingTo113 do
-                FuseGems(100, 112) -- Fuse from level 100 to 112
+                FuseGems(100, 114) -- Fuse from level 100 to 112
                 print("Reloading...")
                 task.wait(0.0001) -- Small delay between reloads
             end
