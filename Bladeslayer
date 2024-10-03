@@ -1,6 +1,6 @@
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 -- Bogus Performance Evaluation: x1.000
-local Window = OrionLib:MakeWindow({Name = "Auto-ByLocLe", HidePremium = false, SaveConfig = true, ConfigFolder = "Sigma"});
+local Window = OrionLib:MakeWindow({Name = "Auto", HidePremium = false, SaveConfig = true, ConfigFolder = "Sigma"});
 
 getgenv().Settings = {
     AutoFarm = false,
@@ -389,6 +389,87 @@ DupeColorGemTab:AddToggle({
 })
 
 
+local gemIDsLevel15 = {}  -- Biến để lưu danh sách ID của các gem level 15
+
+-- Hàm để lấy tất cả gem có cùng level
+local function GetAllGemsWithSameID(level)
+    local gems = {}  -- Bảng để lưu các gem có cùng ID
+    local player = game.Players.LocalPlayer
+    local gui = player:WaitForChild("PlayerGui")
+    local gemsPanel = gui:WaitForChild("GemsPanel")
+    local frame = gemsPanel:WaitForChild("Frame")
+    local bgImage = frame:WaitForChild("BgImage")
+    local list = bgImage:WaitForChild("List")
+    local scrollingFrame = list:WaitForChild("ScrollingFrame")
+
+    if scrollingFrame then
+        for _, child in ipairs(scrollingFrame:GetChildren()) do
+            local numtext = child:FindFirstChild("NumText")
+
+            if numtext then
+                local gemLevel = tonumber(numtext.Text:match("%d+"))  -- Lấy số level từ Text
+                if gemLevel == level then
+                    table.insert(gems, child.Name)  -- Thêm ID của gem vào danh sách
+                end
+            end
+        end
+    else
+        error("Error: ScrollingFrame not found.")  -- Báo lỗi nếu không tìm thấy ScrollingFrame
+    end
+
+    return gems  -- Trả về bảng chứa ID của các gem có cùng level
+end
+
+-- Hàm để nhân bản gem dựa trên danh sách ID đã lấy được
+local function DupeGemsByID()
+    if #gemIDsLevel15 > 0 then  -- Kiểm tra nếu có gem ID trong bảng
+        for _, gemID in ipairs(gemIDsLevel15) do
+            local args = {
+                [1] = {
+                    [1] = gemID,
+                    [2] = gemID,
+                    [3] = gemID,
+                    [4] = gemID,
+                    [5] = gemID
+                }
+            }
+            print("Duplicating Gem ID:", gemID)
+
+            -- Thực hiện lệnh nhân bản gem
+            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("FuseGem"):InvokeServer(unpack(args))
+        end
+    else
+        print("Không có Gem level 15 nào để nhân bản.")
+    end
+end
+
+-- Tạo một tab mới cho các hành động Dupe Gem
+local DupeGemTab = Window:MakeTab({
+    Name = "Dupe Gem",
+    Icon = "rbxassetid://4483345998", 
+    PremiumOnly = false
+})
+
+-- Button để lấy danh sách ID của gem level 15
+DupeGemTab:AddButton({
+    Name = "Get Gem IDs Level 15",
+    Callback = function()
+        gemIDsLevel15 = GetAllGemsWithSameID(15)  -- Gọi hàm để lấy danh sách ID của gem level 15
+        if #gemIDsLevel15 > 0 then
+            print("Đã tìm thấy Gem level 15. ID:", table.concat(gemIDsLevel15, ", "))
+        else
+            print("Không tìm thấy Gem level 15.")
+        end
+    end
+})
+
+-- Button để nhân bản gem level 15
+DupeGemTab:AddButton({
+    Name = "Dupe Gem Level 15",
+    Callback = function()
+        DupeGemsByID()  -- Gọi hàm để nhân bản tất cả các gem level 15 đã lấy được
+    end
+})
 
 
 
