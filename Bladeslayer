@@ -41,17 +41,17 @@ AccesoryTab:AddLabel("Will Need The Tokens needed to roll")
 local tms = AccesoryTab:AddSection({Name="Talismans"});
 local Legendary = AccesoryTab:AddSection({Name="Legendary"});
 local Mythic = AccesoryTab:AddSection({Name="Mythic"});
-local Claim = MiscTab:AddSection({Name="Claim"});
-local Others = MiscTab:AddSection({Name="Others"});
-local Others1 = MiscTab:AddSection({Name="Others"});
+--local Claim = MiscTab:AddSection({Name="Claim"});
+--local Others = MiscTab:AddSection({Name="Others"});
+--local Others1 = MiscTab:AddSection({Name="Others"});
 
-Claim:AddButton({Name="Group Rewards",Callback=function()
+MiscTab:AddButton({Name="Group Rewards",Callback=function()
 	while wait() do
 		game:GetService("ReplicatedStorage").Remotes.ClaimGroupReward:InvokeServer();
 	end
 end});
 
-Claim:AddButton({Name="Daily Gifts",Callback=function()
+MiscTab:AddButton({Name="Daily Gifts",Callback=function()
 	while wait() do
 		for x = 1, 7 do
 			local args = {[1]=x};
@@ -60,7 +60,7 @@ Claim:AddButton({Name="Daily Gifts",Callback=function()
 	end
 end});
 
-Claim:AddButton({Name="Redeem Codes",Callback=function()
+MiscTab:AddButton({Name="Redeem Codes",Callback=function()
 	while wait() do
 		for x = 1, 1000 do
 			local args = {[1]=x};
@@ -69,7 +69,7 @@ Claim:AddButton({Name="Redeem Codes",Callback=function()
 	end
 end});
 
-Claim:AddButton({Name="Redeem Spins",Callback=function()
+MiscTab:AddButton({Name="Redeem Spins",Callback=function()
 	while wait() do
 		for x = 1, 8 do
 			local args = {[1]=x};
@@ -78,7 +78,7 @@ Claim:AddButton({Name="Redeem Spins",Callback=function()
 	end
 end});
 
-Others1:AddButton({Name="SimpleSpy",Callback=function()
+MiscTab:AddButton({Name="SimpleSpy",Callback=function()
 	loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/78n/SimpleSpy/main/SimpleSpyBeta.lua"))();
 end});
 
@@ -90,7 +90,7 @@ spawn(function()
 	end
 end);
 
-Others:AddButton({Name="Fps Booster",Callback=function()
+MiscTab:AddButton({Name="Fps Booster",Callback=function()
 	for a, b in pairs(game.ReplicatedStorage.SkillEffects:GetDescendants()) do
 		if (b:IsA("Part") or b:IsA("MeshPart")) then
 			b.Transparency = 1;
