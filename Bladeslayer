@@ -67,7 +67,6 @@ EMount:AddButton({Name="Use Selected Mount",Callback=function()
 	end
 end});
 
--- Thêm Tab cho Buy/Sell Gem và ColorGem
 local GemActionsTab = Window:MakeTab({
     Name = "Gem Actions",
     Icon = "rbxassetid://4483345998",
@@ -85,6 +84,8 @@ local isAutoBuyingGem = false
 local isAutoSellingGem = false
 local isAutoBuyingColorGem = false
 local isAutoSellingColorGem = false
+local isFusingTo13 = false
+local isFusingTo113 = false
 
 -- Function để tìm gem hoặc color gem với level mong muốn
 local function GetNextGemID(currentLevel)
@@ -99,11 +100,10 @@ local function GetNextGemID(currentLevel)
     if scrollingFrame then
         for _, child in ipairs(scrollingFrame:GetChildren()) do
             local numtext = child:FindFirstChild("NumText")
-
             if numtext then
                 local level = tonumber(numtext.Text:match("%d+"))
                 if level == currentLevel then
-                    return child.Name -- Trả về ID của gem
+                    return child.Name
                 end
             end
         end
@@ -114,27 +114,21 @@ local function GetNextGemID(currentLevel)
     return nil
 end
 
--- Function để tự động mua gem với các ID khác nhau
+-- Function để tự động mua gems
 local function AutoBuyGems()
-    local gemIDs = {10004, 10005, 10006} -- Danh sách các ID của gem để mua
-
+    local gemIDs = {10004, 10005, 10006}
     for _, gemID in ipairs(gemIDs) do
         local args = {
             [1] = gemID
         }
-        print("Buying Gem with ID:", gemID)
-
-        -- Gửi lệnh mua gem
         game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("TowerExchange"):FireServer(unpack(args))
-        task.wait(0.01) -- Delay giữa các lệnh mua
+        task.wait(0.01)
     end
 end
 
--- Function để bán gem level 10
+-- Function để bán gem level 13
 local function AutoSellGems()
-    -- Tìm gem level 10
-    local gemID = GetNextGemID(10)
-
+    local gemID = GetNextGemID(13)
     if gemID then
         local args = {
             [1] = {
@@ -144,36 +138,25 @@ local function AutoSellGems()
                 }
             }
         }
-        print("Selling Gem with ID:", gemID)
-
-        -- Gửi lệnh bán gem
         game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("DecomposeItems"):FireServer(unpack(args))
-    else
-        print("Không tìm thấy Gem level 10.")
     end
 end
 
--- Function để tự động mua ColorGem với các ID khác nhau
+-- Function để tự động mua ColorGems
 local function AutoBuyColorGems()
-    local colorGemIDs = {10017, 10018, 10019, 10020, 10021} -- Danh sách các ID ColorGem để mua
-
+    local colorGemIDs = {10017, 10018, 10019, 10020, 10021}
     for _, colorGemID in ipairs(colorGemIDs) do
         local args = {
             [1] = colorGemID
         }
-        print("Buying ColorGem with ID:", colorGemID)
-
-        -- Gửi lệnh mua ColorGem
         game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("MapShopExchange"):FireServer(unpack(args))
-        task.wait(0.01) -- Delay giữa các lệnh mua
+        task.wait(0.01)
     end
 end
 
--- Function để bán ColorGem level 110
+-- Function để bán ColorGem level 113
 local function AutoSellColorGems()
-    -- Tìm ColorGem level 110
-    local gemID = GetNextGemID(110)
-
+    local gemID = GetNextGemID(113)
     if gemID then
         local args = {
             [1] = {
@@ -183,293 +166,148 @@ local function AutoSellColorGems()
                 }
             }
         }
-        print("Selling ColorGem with ID:", gemID)
-
-        -- Gửi lệnh bán ColorGem
         game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("DecomposeItems"):FireServer(unpack(args))
-    else
-        print("Không tìm thấy ColorGem level 110.")
     end
 end
 
--- Toggle để tự động mua gems
+-- Function để hợp nhất gems từ một cấp độ bắt đầu đến một cấp độ mục tiêu
+local function FuseGems(startLevel, endLevel)
+    for currentLevel = startLevel, endLevel do
+        local gemID = GetNextGemID(currentLevel)
+        if gemID then
+            local args = {
+                [1] = {
+                    [1] = gemID,
+                    [2] = gemID,
+                    [3] = gemID,
+                    [4] = gemID,
+                    [5] = gemID
+                }
+            }
+            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("FuseGem"):InvokeServer(unpack(args))
+        end
+        task.wait(0.000001)
+    end
+end
+
+-- Toggle cho Auto Buy Gems
 GemActionsTab:AddToggle({
     Name = "Auto Buy Gems",
     Default = false,
     Callback = function(value)
         isAutoBuyingGem = value
         if isAutoBuyingGem then
-            print("Auto Buy Gems is ON")
             while isAutoBuyingGem do
                 AutoBuyGems()
-                task.wait(0.01) -- Delay giữa các vòng lặp
+                task.wait(0.01)
             end
-        else
-            print("Auto Buy Gems is OFF")
         end
     end
 })
 
--- Toggle để tự động bán gems
+-- Toggle cho Auto Sell Gems 13
 GemActionsTab:AddToggle({
-    Name = "Auto Sell Gems",
+    Name = "Auto Sell Gems 13",
     Default = false,
     Callback = function(value)
         isAutoSellingGem = value
         if isAutoSellingGem then
-            print("Auto Sell Gems is ON")
             while isAutoSellingGem do
                 AutoSellGems()
-                task.wait(0.01) -- Delay giữa các vòng lặp
+                task.wait(0.01)
             end
-        else
-            print("Auto Sell Gems is OFF")
         end
     end
 })
 
--- Toggle để tự động mua ColorGems
+-- Toggle cho Auto Fuse all gems to level 13
+GemActionsTab:AddToggle({
+    Name = "Auto Fuse all gems to level 13",
+    Default = false,
+    Callback = function(value)
+        isFusingTo13 = value
+        if isFusingTo13 then
+            while isFusingTo13 do
+                FuseGems(1, 12)
+                task.wait()
+            end
+        end
+    end
+})
+
+-- Toggle cho Auto Buy ColorGems
 ColorGemActionsTab:AddToggle({
     Name = "Auto Buy ColorGems",
     Default = false,
     Callback = function(value)
         isAutoBuyingColorGem = value
         if isAutoBuyingColorGem then
-            print("Auto Buy ColorGems is ON")
             while isAutoBuyingColorGem do
                 AutoBuyColorGems()
-                task.wait(0.01) -- Delay giữa các vòng lặp
+                task.wait(0.01)
             end
-        else
-            print("Auto Buy ColorGems is OFF")
         end
     end
 })
 
--- Toggle để tự động bán ColorGems
+-- Toggle cho Auto Sell ColorGems 113
 ColorGemActionsTab:AddToggle({
-    Name = "Auto Sell ColorGems",
+    Name = "Auto Sell ColorGems 113",
     Default = false,
     Callback = function(value)
         isAutoSellingColorGem = value
         if isAutoSellingColorGem then
-            print("Auto Sell ColorGems is ON")
             while isAutoSellingColorGem do
                 AutoSellColorGems()
-                task.wait(0.01) -- Delay giữa các vòng lặp
+                task.wait(0.01)
             end
-        else
-            print("Auto Sell ColorGems is OFF")
         end
     end
 })
 
-
-
-
-local DupeGemTab = Window:MakeTab({
-    Name = "Dupe Gem",
-    Icon = "rbxassetid://4483345998", 
-    PremiumOnly = false
-})
-
-local DupeColorGemTab = Window:MakeTab({
-    Name = "Dupe Color Gem",
-    Icon = "rbxassetid://4483345998", 
-    PremiumOnly = false
-})
-
--- Trạng thái cho các toggle
-local isFusingTo13 = false
-local isFusingTo10 = false
-local isFusingTo113 = false
-local isFusingTo110 = false
-
-
-
--- Function to fuse gems from any starting level to any target level
-local function FuseGems(startLevel, endLevel)
-    for currentLevel = startLevel, endLevel do
-        local gemID = GetNextGemID(currentLevel)
-
-        if gemID then
-            print("Level", currentLevel, "gem ID found:", gemID)
-            
-            local args = {
-                [1] = {
-                    [1] = gemID,
-                    [2] = gemID,
-                    [3] = gemID,
-                    [4] = gemID,
-                    [5] = gemID
-                }
-            }
-
-            print("Invoking FuseGem remote with args:", args)
-
-            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("FuseGem"):InvokeServer(unpack(args))
-        else
-            print("Error: Could not find gem ID for level", currentLevel)
-        end
-
-        task.wait(0.000001) -- Small delay between levels, increase if needed for stability
-    end
-end
-
--- Toggle for fusing all gems to level 13 with reload
-DupeGemTab:AddToggle({
-    Name = "Auto Fuse all gems to level 15",
-    Default = false,
-    Callback = function(value)
-        isFusingTo13 = value
-        if isFusingTo13 then
-            print("Auto Fuse to Level 13 is ON")
-            while isFusingTo13 do
-                FuseGems(1, 14) -- Fuse from level 1 to 12
-                print("Reloading...")
-                task.wait() -- Small delay between reloads
-            end
-            print("Auto Fuse to Level 13 is OFF")
-        end
-    end
-})
-
--- Toggle for fusing all gems to level 10 with reload
-DupeGemTab:AddToggle({
-    Name = "Auto Fuse all gems to level 10",
-    Default = false,
-    Callback = function(value)
-        isFusingTo10 = value
-        if isFusingTo10 then
-            print("Auto Fuse to Level 10 is ON")
-            while isFusingTo10 do
-                FuseGems(1, 9) -- Fuse from level 1 to 9
-                print("Reloading...")
-                task.wait() -- Small delay between reloads
-            end
-            print("Auto Fuse to Level 10 is OFF")
-        end
-    end
-})
-
--- Toggle for fusing all gems to level 113 with reload
-DupeColorGemTab:AddToggle({
+-- Toggle cho Auto Fuse all gems to level 113
+ColorGemActionsTab:AddToggle({
     Name = "Auto Fuse all gems to level 113",
     Default = false,
     Callback = function(value)
         isFusingTo113 = value
         if isFusingTo113 then
-            print("Auto Fuse to Level 113 is ON")
             while isFusingTo113 do
-                FuseGems(100, 114) -- Fuse from level 100 to 112
-                print("Reloading...")
-                task.wait(0.0001) -- Small delay between reloads
+                FuseGems(100, 112)
+                task.wait(0.0001)
             end
-            print("Auto Fuse to Level 113 is OFF")
-        end
-    end
-})
-
--- Toggle for fusing all gems to level 110 with reload
-DupeColorGemTab:AddToggle({
-    Name = "Auto Fuse all gems to level 110",
-    Default = false,
-    Callback = function(value)
-        isFusingTo110 = value
-        if isFusingTo110 then
-            print("Auto Fuse to Level 110 is ON")
-            while isFusingTo110 do
-                FuseGems(100, 109) -- Fuse from level 100 to 109
-                print("Reloading...")
-                task.wait(0.0001) -- Small delay between reloads
-            end
-            print("Auto Fuse to Level 110 is OFF")
         end
     end
 })
 
 
-local gemIDsLevel15 = {}  -- Biến để lưu danh sách ID của các gem level 15
 
--- Hàm để lấy tất cả gem có cùng level
-local function GetAllGemsWithSameID(level)
-    local gems = {}  -- Bảng để lưu các gem có cùng ID
-    local player = game.Players.LocalPlayer
-    local gui = player:WaitForChild("PlayerGui")
-    local gemsPanel = gui:WaitForChild("GemsPanel")
-    local frame = gemsPanel:WaitForChild("Frame")
-    local bgImage = frame:WaitForChild("BgImage")
-    local list = bgImage:WaitForChild("List")
-    local scrollingFrame = list:WaitForChild("ScrollingFrame")
 
-    if scrollingFrame then
-        for _, child in ipairs(scrollingFrame:GetChildren()) do
-            local numtext = child:FindFirstChild("NumText")
 
-            if numtext then
-                local gemLevel = tonumber(numtext.Text:match("%d+"))  -- Lấy số level từ Text
-                if gemLevel == level then
-                    table.insert(gems, child.Name)  -- Thêm ID của gem vào danh sách
-                end
-            end
-        end
-    else
-        error("Error: ScrollingFrame not found.")  -- Báo lỗi nếu không tìm thấy ScrollingFrame
-    end
-
-    return gems  -- Trả về bảng chứa ID của các gem có cùng level
-end
-
--- Hàm để nhân bản gem dựa trên danh sách ID đã lấy được
-local function DupeGemsByID()
-    if #gemIDsLevel15 > 0 then  -- Kiểm tra nếu có gem ID trong bảng
-        for _, gemID in ipairs(gemIDsLevel15) do
-            local args = {
-                [1] = {
-                    [1] = gemID,
-                    [2] = gemID,
-                    [3] = gemID,
-                    [4] = gemID,
-                    [5] = gemID
-                }
-            }
-            print("Duplicating Gem ID:", gemID)
-
-            -- Thực hiện lệnh nhân bản gem
-            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("FuseGem"):InvokeServer(unpack(args))
-        end
-    else
-        print("Không có Gem level 15 nào để nhân bản.")
-    end
-end
-
--- Tạo một tab mới cho các hành động Dupe Gem
-local DupeGemTab = Window:MakeTab({
-    Name = "Dupe Gem",
-    Icon = "rbxassetid://4483345998", 
+-- Tạo tab mới cho việc mua gem level 15
+local BuyGemLevel15Tab = Window:MakeTab({
+    Name = "Buy Gem Level 15",
+    Icon = "rbxassetid://4483345998",
     PremiumOnly = false
 })
 
--- Button để lấy danh sách ID của gem level 15
-DupeGemTab:AddButton({
-    Name = "Get Gem IDs Level 15",
+-- Function để mua gem level 15
+local function BuyGemLevel15()
+    local args = {
+        [1] = 10071
+    }
+    game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("MapShopExchange"):FireServer(unpack(args))
+    print("Đã mua gem level 15")
+end
+
+-- Thêm nút vào tab để mua gem level 15
+BuyGemLevel15Tab:AddButton({
+    Name = "Mua Gem Level 15",
     Callback = function()
-        gemIDsLevel15 = GetAllGemsWithSameID(15)  -- Gọi hàm để lấy danh sách ID của gem level 15
-        if #gemIDsLevel15 > 0 then
-            print("Đã tìm thấy Gem level 15. ID:", table.concat(gemIDsLevel15, ", "))
-        else
-            print("Không tìm thấy Gem level 15.")
-        end
+        BuyGemLevel15()
     end
 })
 
--- Button để nhân bản gem level 15
-DupeGemTab:AddButton({
-    Name = "Dupe Gem Level 15",
-    Callback = function()
-        DupeGemsByID()  -- Gọi hàm để nhân bản tất cả các gem level 15 đã lấy được
-    end
-})
 
 
 
