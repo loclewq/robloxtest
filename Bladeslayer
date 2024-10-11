@@ -26,7 +26,7 @@ local PlayerTab = Window:MakeTab({Name="Player",Icon="rbxassetid://4483345998",P
 local WhtvrTab = Window:MakeTab({Name="Mount/Eggs",Icon="rbxassetid://4483345998",PremiumOnly=false});
 local SNGTab = Window:MakeTab({Name="Sword And Gems",Icon="rbxassetid://4483345998",PremiumOnly=false});
 local AccesoryTab = Window:MakeTab({Name="Roll-Tab-Legendary",Icon="rbxassetid://4483345998",PremiumOnly=false});
-local MiscTab = Window:MakeTab({Name="Misc",Icon="rbxassetid://4483345998",PremiumOnly=false});
+
 
 local EMount = WhtvrTab:AddSection({Name="Mounts"});
 local EGG = WhtvrTab:AddSection({Name="Eggs"});
@@ -41,9 +41,7 @@ AccesoryTab:AddLabel("Will Need The Tokens needed to roll")
 local tms = AccesoryTab:AddSection({Name="Talismans"});
 local Legendary = AccesoryTab:AddSection({Name="Legendary"});
 local Mythic = AccesoryTab:AddSection({Name="Mythic"});
-local Claim = MiscTab:AddSection({Name="Claim"});
-local Others = MiscTab:AddSection({Name="Others"});
-local Others1 = MiscTab:AddSection({Name="Others"});
+
 
 local nameMap = {[100001]="Cloud",[100002]="Lightning Cloud",[100003]="Gold Cloud",[100004]="Magic Skateboard",[100005]="Sci-Fi Skateboard",[100006]="Pomni",[100007]="Doge Car",[100008]="Magic Carpet",[100009]="Tron Bike",[100010]="Fire Wheel",[100011]="Water Wheel",[100012]="Sleigh",[100013]="Banana Car",[100014]="Flying Swords",[100015]="Motor Bike",[100016]="Broken Sky",[100017]="Broom",[100018]="Rubber Ducky",[100019]="Bat Mobile",[100020]="Tank",[100021]="Superman",[100022]="UFO",[100023]="Rocket",[100024]="Pirate Ship",[100025]="Leaf",[100026]="Plane"};
 local mountNames = {};
@@ -403,9 +401,7 @@ pcall(function()
     end
 end);
 
-SwordSec:AddToggle({
-    Name="Auto Delete Weapons",
-    Callback=function(autoSellWeapons)
+SwordSec:AddToggle({Name="Auto Delete Weapons",Callback=function(autoSellWeapons)
         if autoSellWeapons then
             getgenv().Settings.autoSellWeapons = true;
             while getgenv().Settings.autoSellWeapons do
@@ -444,11 +440,7 @@ SwordSec:AddToggle({Name="Auto Forge Equipped Sword",Callback=function(autoForge
 	end
 end});
 
-EGG:AddDropdown({
-    Name = "Pick Egg",
-    Default = "",
-    Options = {"World 1","World 2","World 3","World 4","World 5","World 6","World 7","World 8","World 9","Naruto","One Piece"},
-    Callback = function(Value)
+EGG:AddDropdown({Name = "Pick Egg",Default = "",Options = {"World 1","World 2","World 3","World 4","World 5","World 6","World 7","World 8","World 9","Naruto","One Piece"},Callback = function(Value)
         local EGGS = {
             ["World 1"] = 70001,
             ["World 2"] = 70003,
@@ -466,9 +458,7 @@ EGG:AddDropdown({
     end
 })
 
-EGG:AddToggle({
-    Name = "Open Eggs",
-    Callback = function(Value)
+EGG:AddToggle({Name = "Open Eggs",Callback = function(Value)
         getgenv().Settings.openEgg = Value
         if Value then
             while getgenv().Settings.openEgg do
@@ -507,9 +497,7 @@ end);
 EGG1:AddLabel("Will Fuse to Equiped Heroes")
 EGG1:AddLabel("Will Delete/Fuse The Uneqquiped and Unlocked Heroes")
 
-EGG1:AddToggle({
-    Name="Auto Delete Heroes",
-    Callback=function(autoSellHeroes)
+EGG1:AddToggle({Name="Auto Delete Heroes",Callback=function(autoSellHeroes)
         if autoSellHeroes then
             getgenv().Settings.autoSellHeroes = true;
             while getgenv().Settings.autoSellHeroes do
@@ -531,9 +519,7 @@ EGG1:AddToggle({
     end
 });
 
-EGG1:AddToggle({
-    Name="Auto Fuse Heroes",
-    Callback=function(autoFuseHeroes)
+EGG1:AddToggle({Name="Auto Fuse Heroes",Callback=function(autoFuseHeroes)
         if autoFuseHeroes then
             getgenv().Settings.autoFuseHeroes = true;
             while getgenv().Settings.autoFuseHeroes do
@@ -801,6 +787,11 @@ Mythic:AddButton({Name="Reroll Awakening",Callback=rerollMythicAwakening});
 Mythic:AddButton({Name="Reroll Ornament",Callback=rerollMythicOrnament});
 Mythic:AddButton({Name="Reroll Trail",Callback=rerollMythicTrail});
 
+
+local MiscTab = Window:MakeTab({Name="Misc",Icon="rbxassetid://4483345998",PremiumOnly=false});
+local Claim = MiscTab:AddSection({Name="Claim"});
+local Others = MiscTab:AddSection({Name="Others"});
+local Others1 = MiscTab:AddSection({Name="Others"});
 
 Claim:AddButton({Name="Group Rewards",Callback=function()
 	while wait() do
