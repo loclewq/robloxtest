@@ -22,119 +22,125 @@ getgenv().Settings = {
     mespetsequiper = {}
 }
 
-local PlayerTab = Window:MakeTab({Name="Player",Icon="rbxassetid://4483345998",PremiumOnly=false});
-local WhtvrTab = Window:MakeTab({Name="Mount/Eggs",Icon="rbxassetid://4483345998",PremiumOnly=false});
-local SNGTab = Window:MakeTab({Name="Sword And Gems",Icon="rbxassetid://4483345998",PremiumOnly=false});
-local AccesoryTab = Window:MakeTab({Name="Roll-Tab-Legendary",Icon="rbxassetid://4483345998",PremiumOnly=false});
-local MiscTab = Window:MakeTab({Name="Misc",Icon="rbxassetid://4483345998",PremiumOnly=false});
+local PlayerTab = Window:MakeTab({Name="Player", Icon="rbxassetid://4483345998", PremiumOnly=false})
+local WhtvrTab = Window:MakeTab({Name="Mount/Eggs", Icon="rbxassetid://4483345998", PremiumOnly=false})
+local SNGTab = Window:MakeTab({Name="Sword And Gems", Icon="rbxassetid://4483345998", PremiumOnly=false})
+local AccesoryTab = Window:MakeTab({Name="Roll-Tab-Legendary", Icon="rbxassetid://4483345998", PremiumOnly=false})
+local MiscTab = Window:MakeTab({Name="Misc", Icon="rbxassetid://4483345998", PremiumOnly=false})
 
-local EMount = WhtvrTab:AddSection({Name="Mounts"});
-local EGG = WhtvrTab:AddSection({Name="Eggs"});
-local EGG1 = WhtvrTab:AddSection({Name="Lock Your Pets Before Using."});
-local FarmSec = PlayerTab:AddSection({Name="Auto Farm"});
-local FarmSec2 = PlayerTab:AddSection({Name="Others"});
-local SwordSec = SNGTab:AddSection({Name="Fuse/Sell Swords"});
-local Lvl10 = SNGTab:AddSection({Name="Auto Sell/Lvl 10 gem(Need Gems To Work)"});
+local EMount = WhtvrTab:AddSection({Name="Mounts"})
+local EGG = WhtvrTab:AddSection({Name="Eggs"})
+local EGG1 = WhtvrTab:AddSection({Name="Lock Your Pets Before Using."})
+local FarmSec = PlayerTab:AddSection({Name="Auto Farm"})
+local FarmSec2 = PlayerTab:AddSection({Name="Others"})
+local SwordSec = SNGTab:AddSection({Name="Fuse/Sell Swords"})
+local Lvl10 = SNGTab:AddSection({Name="Auto Sell/Lvl 10 gem (Need Gems To Work)"})
 
 AccesoryTab:AddLabel("Will Need The Tokens needed to roll")
 
-local tms = AccesoryTab:AddSection({Name="Talismans"});
-local Legendary = AccesoryTab:AddSection({Name="Legendary"});
-local Mythic = AccesoryTab:AddSection({Name="Mythic"});
---local Claim = MiscTab:AddSection({Name="Claim"});
---local Others = MiscTab:AddSection({Name="Others"});
---local Others1 = MiscTab:AddSection({Name="Others"});
+local tms = AccesoryTab:AddSection({Name="Talismans"})
+local Legendary = AccesoryTab:AddSection({Name="Legendary"})
+local Mythic = AccesoryTab:AddSection({Name="Mythic"})
 
-MiscTab:AddButton({Name="Group Rewards",Callback=function()
-	while wait() do
-		game:GetService("ReplicatedStorage").Remotes.ClaimGroupReward:InvokeServer();
-	end
-end});
+-- Tạo một Section mới trong MiscTab để thêm các nút
+local ClaimSection = MiscTab:AddSection({Name="Claim Rewards"})
+local OthersSection = MiscTab:AddSection({Name="Others"})
 
-MiscTab:AddButton({Name="Daily Gifts",Callback=function()
-	while wait() do
-		for x = 1, 7 do
-			local args = {[1]=x};
-			game:GetService("ReplicatedStorage").Remotes.ClaimSevenLoginReward:FireServer(unpack(args));
-		end
-	end
-end});
+-- Thêm các nút vào ClaimSection
+ClaimSection:AddButton({Name="Group Rewards", Callback=function()
+    while wait() do
+        game:GetService("ReplicatedStorage").Remotes.ClaimGroupReward:InvokeServer()
+    end
+end})
 
-MiscTab:AddButton({Name="Redeem Codes",Callback=function()
-	while wait() do
-		for x = 1, 1000 do
-			local args = {[1]=x};
-			game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("GiftCodeReceived"):InvokeServer(unpack(args));
-		end
-	end
-end});
+ClaimSection:AddButton({Name="Daily Gifts", Callback=function()
+    while wait() do
+        for x = 1, 7 do
+            local args = {[1] = x}
+            game:GetService("ReplicatedStorage").Remotes.ClaimSevenLoginReward:FireServer(unpack(args))
+        end
+    end
+end})
 
-MiscTab:AddButton({Name="Redeem Spins",Callback=function()
-	while wait() do
-		for x = 1, 8 do
-			local args = {[1]=x};
-			game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ClaimActivitySpinTicket"):InvokeServer(unpack(args));
-		end
-	end
-end});
+ClaimSection:AddButton({Name="Redeem Codes", Callback=function()
+    while wait() do
+        for x = 1, 1000 do
+            local args = {[1] = x}
+            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("GiftCodeReceived"):InvokeServer(unpack(args))
+        end
+    end
+end})
 
-MiscTab:AddButton({Name="SimpleSpy",Callback=function()
-	loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/78n/SimpleSpy/main/SimpleSpyBeta.lua"))();
-end});
+ClaimSection:AddButton({Name="Redeem Spins", Callback=function()
+    while wait() do
+        for x = 1, 8 do
+            local args = {[1] = x}
+            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ClaimActivitySpinTicket"):InvokeServer(unpack(args))
+        end
+    end
+end})
 
+-- Thêm nút SimpleSpy vào OthersSection
+OthersSection:AddButton({Name="SimpleSpy", Callback=function()
+    loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/78n/SimpleSpy/main/SimpleSpyBeta.lua"))()
+end})
+
+-- Tạo một nút Fps Booster trong OthersSection
+OthersSection:AddButton({Name="Fps Booster", Callback=function()
+    for a, b in pairs(game.ReplicatedStorage.SkillEffects:GetDescendants()) do
+        if (b:IsA("Part") or b:IsA("MeshPart")) then
+            b.Transparency = 1
+        end
+        if (b:IsA("ParticleEmitter") or b:IsA("Beam")) then
+            b.Enabled = false
+        end
+    end
+    game.ReplicatedStorage.Effect.AttackNum.Enabled = false
+    local c = game
+    local d = c.Workspace
+    local e = c.Lighting
+    local f = d.Terrain
+    f.WaterWaveSize = 0
+    f.WaterWaveSpeed = 0
+    f.WaterReflectance = 0
+    f.WaterTransparency = 0
+    e.GlobalShadows = false
+    e.FogEnd = 8999999488
+    e.Brightness = 0
+    settings().Rendering.QualityLevel = "Level01"
+    for g, h in pairs(c:GetDescendants()) do
+        if (h:IsA("Part") or h:IsA("Union") or h:IsA("CornerWedgePart") or h:IsA("TrussPart")) then
+            h.Reflectance = 0
+        elseif (h:IsA("Decal") or h:IsA("Texture")) then
+            h.Transparency = 0
+        elseif (h:IsA("ParticleEmitter") or h:IsA("Trail")) then
+            h.Lifetime = NumberRange.new(0)
+        elseif h:IsA("Explosion") then
+            h.BlastPressure = 0
+            h.BlastRadius = 0
+        elseif (h:IsA("Fire") or h:IsA("SpotLight") or h:IsA("Smoke") or h:IsA("Sparkles")) then
+            h.Enabled = false
+        elseif h:IsA("MeshPart") then
+            h.Reflectance = 0
+        end
+    end
+    for g, i in pairs(e:GetChildren()) do
+        if (i:IsA("BlurEffect") or i:IsA("SunRaysEffect") or i:IsA("ColorCorrectionEffect") or i:IsA("BloomEffect") or i:IsA("DepthOfFieldEffect")) then
+            i.Enabled = false
+        end
+    end
+    sethiddenproperty(game.Lighting, "Technology", "Compatibility")
+end})
+
+-- Anti-AFK chức năng
 spawn(function()
-	while wait(15) do
-		local VirtualUser = game:service("VirtualUser");
-		VirtualUser:CaptureController();
-		VirtualUser:ClickButton2(Vector2.new());
-	end
-end);
+    while wait(15) do
+        local VirtualUser = game:service("VirtualUser")
+        VirtualUser:CaptureController()
+        VirtualUser:ClickButton2(Vector2.new())
+    end
+end)
 
-MiscTab:AddButton({Name="Fps Booster",Callback=function()
-	for a, b in pairs(game.ReplicatedStorage.SkillEffects:GetDescendants()) do
-		if (b:IsA("Part") or b:IsA("MeshPart")) then
-			b.Transparency = 1;
-		end
-		if (b:IsA("ParticleEmitter") or b:IsA("Beam")) then
-			b.Enabled = false;
-		end
-	end
-	game.ReplicatedStorage.Effect.AttackNum.Enabled = false;
-	local c = game;
-	local d = c.Workspace;
-	local e = c.Lighting;
-	local f = d.Terrain;
-	f.WaterWaveSize = 0;
-	f.WaterWaveSpeed = 0;
-	f.WaterReflectance = 0;
-	f.WaterTransparency = 0;
-	e.GlobalShadows = false;
-	e.FogEnd = 8999999488;
-	e.Brightness = 0;
-	settings().Rendering.QualityLevel = "Level01";
-	for g, h in pairs(c:GetDescendants()) do
-		if (h:IsA("Part") or h:IsA("Union") or h:IsA("CornerWedgePart") or h:IsA("TrussPart")) then
-			h.Reflectance = 0;
-		elseif (h:IsA("Decal") or h:IsA("Texture")) then
-			h.Transparency = 0;
-		elseif (h:IsA("ParticleEmitter") or h:IsA("Trail")) then
-			h.Lifetime = NumberRange.new(0);
-		elseif h:IsA("Explosion") then
-			h.BlastPressure = 0;
-			h.BlastRadius = 0;
-		elseif (h:IsA("Fire") or h:IsA("SpotLight") or h:IsA("Smoke") or h:IsA("Sparkles")) then
-			h.Enabled = false;
-		elseif h:IsA("MeshPart") then
-			h.Reflectance = 0;
-		end
-	end
-	for g, i in pairs(e:GetChildren()) do
-		if (i:IsA("BlurEffect") or i:IsA("SunRaysEffect") or i:IsA("ColorCorrectionEffect") or i:IsA("BloomEffect") or i:IsA("DepthOfFieldEffect")) then
-			i.Enabled = false;
-		end
-	end
-	sethiddenproperty(game.Lighting, "Technology", "Compatibility");
-end});
 
 
 local nameMap = {[100001]="Cloud",[100002]="Lightning Cloud",[100003]="Gold Cloud",[100004]="Magic Skateboard",[100005]="Sci-Fi Skateboard",[100006]="Pomni",[100007]="Doge Car",[100008]="Magic Carpet",[100009]="Tron Bike",[100010]="Fire Wheel",[100011]="Water Wheel",[100012]="Sleigh",[100013]="Banana Car",[100014]="Flying Swords",[100015]="Motor Bike",[100016]="Broken Sky",[100017]="Broom",[100018]="Rubber Ducky",[100019]="Bat Mobile",[100020]="Tank",[100021]="Superman",[100022]="UFO",[100023]="Rocket",[100024]="Pirate Ship",[100025]="Leaf",[100026]="Plane"};
